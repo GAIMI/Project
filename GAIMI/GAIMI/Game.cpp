@@ -309,7 +309,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	controls->renderText();
 	controls->renderScoreScreen();
 
-    quit = controls->getExit(); // sets the exit
+     
 
 	// render mini map
 	miniMap();
@@ -330,15 +330,20 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 			quit = true;
 		}
 
+        
+
 		// only allow control of the UI when preparing a function string, not during its operation
 		if (!controls->getGoButtonPressed() && !controls->getEndOfMission() && !controls->getOkActive())
 		{
 			controls->setCurrentStage(stage);
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
 			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
+            quit = controls->getExit(); // sets the exit
+            
 		}
 		else if (controls->getOkActive())
 		{
+            quit = controls->getExit(); // sets the exit
 			controls->okButtonActiveOnly(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
 		}
 	}
