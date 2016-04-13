@@ -36,6 +36,7 @@ const std::string LEFT_UI = "Media\\Left_UI.png";
 const std::string BOTTOM_UI = "Media\\BottomUI.jpg";
 const std::string ROBOT_TEX = "Media\\Robot.png";
 const std::string MAP_1 = "Media\\MarsSheet.png";
+const std::string MAP_1_MAP = "Media\\mars.map";
 
 const std::string GO_BUTTON_UI = "Media\\GoButton.png";
 const std::string OK_BUTTON_UI = "media\\OkButton.png";
@@ -47,6 +48,7 @@ const std::string FUNCTION_4 = "Media\\RightArrow.png";
 const std::string FUNCTION_5 = "Media\\DigSample.png";
 const int NUM_FUNCTIONS = 5;	// how many different functions will be available to choose from in the left UI panel
 
+const std::string SUPPLY_ICON = "Media\\SupplyCrate.png";
 const std::string BRIDGE_ICON = "Media\\Bridge.png";
 const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
 
@@ -102,7 +104,7 @@ const int TILE_HEIGHT = 200;
 
 //Tile constants
 const int TOTAL_TILES = (LEVEL_WIDTH / TILE_WIDTH) * (LEVEL_HEIGHT / TILE_HEIGHT);
-const int TOTAL_TILE_TYPES = 5;
+const int TOTAL_TILE_TYPES = 21;
 
 const int PASSABLE = 0;
 const int CRATE = 1;

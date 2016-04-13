@@ -10,7 +10,7 @@
 
 
 // constructor
-Game::Game(SDL_Window* wind, SDL_Renderer* rend, std::string& map) : 
+Game::Game(SDL_Window* wind, SDL_Renderer* rend, std::string& map) :
 	window(wind), renderer(rend), mapName(map)
 {
 	// set default touch location to the centre of the screen
@@ -81,7 +81,7 @@ bool Game::setTiles()
 	int y = 0;
 
 	//Open the map
-	std::ifstream map("mars.map");
+	std::ifstream map(MAP_1_MAP);
 
 	//If the map couldn't be loaded
 	if (!map)
@@ -134,31 +134,112 @@ bool Game::setTiles()
 			}
 		}
 		// clip the sprite sheet //
+		{
+			tileClips[PASSABLE].x = 0;
+			tileClips[PASSABLE].y = 0;
+			tileClips[PASSABLE].w = TILE_WIDTH;
+			tileClips[PASSABLE].h = TILE_HEIGHT;
 
-		tileClips[PASSABLE].x = 0;
-		tileClips[PASSABLE].y = 0;
-		tileClips[PASSABLE].w = TILE_WIDTH;
-		tileClips[PASSABLE].h = TILE_HEIGHT;
+			tileClips[CRATE].x = 200;
+			tileClips[CRATE].y = 0;
+			tileClips[CRATE].w = TILE_WIDTH;
+			tileClips[CRATE].h = TILE_HEIGHT;
 
-		tileClips[IMPASSABLE].x = 200;
-		tileClips[IMPASSABLE].y = 0;
-		tileClips[IMPASSABLE].w = TILE_WIDTH;
-		tileClips[IMPASSABLE].h = TILE_HEIGHT;
+			tileClips[BRIDGE_CRATE].x = 400;
+			tileClips[BRIDGE_CRATE].y = 0;
+			tileClips[BRIDGE_CRATE].w = TILE_WIDTH;
+			tileClips[BRIDGE_CRATE].h = TILE_HEIGHT;
 
-		tileClips[CANYON].x = 400;
-		tileClips[CANYON].y = 0;
-		tileClips[CANYON].w = TILE_WIDTH;
-		tileClips[CANYON].h = TILE_HEIGHT;
+			tileClips[SURVIVOR].x = 600;
+			tileClips[SURVIVOR].y = 0;
+			tileClips[SURVIVOR].w = TILE_WIDTH;
+			tileClips[SURVIVOR].h = TILE_HEIGHT;
 
-		tileClips[SURVIVOR].x = 600;
-		tileClips[SURVIVOR].y = 0;
-		tileClips[SURVIVOR].w = TILE_WIDTH;
-		tileClips[SURVIVOR].h = TILE_HEIGHT;
+			tileClips[DIG_SITE].x = 800;
+			tileClips[DIG_SITE].y = 0;
+			tileClips[DIG_SITE].w = TILE_WIDTH;
+			tileClips[DIG_SITE].h = TILE_HEIGHT;
 
-		tileClips[BRIDGE_CRATE].x = 800;
-		tileClips[BRIDGE_CRATE].y = 0;
-		tileClips[BRIDGE_CRATE].w = TILE_WIDTH;
-		tileClips[BRIDGE_CRATE].h = TILE_HEIGHT;
+			tileClips[BRIDGE_VERT].x = 1000;
+			tileClips[BRIDGE_VERT].y = 0;
+			tileClips[BRIDGE_VERT].w = TILE_WIDTH;
+			tileClips[BRIDGE_VERT].h = TILE_HEIGHT;
+
+			tileClips[BRIDGE_HORIZ].x = 1200;
+			tileClips[BRIDGE_HORIZ].y = 0;
+			tileClips[BRIDGE_HORIZ].w = TILE_WIDTH;
+			tileClips[BRIDGE_HORIZ].h = TILE_HEIGHT;
+
+			tileClips[BRIDGE_CAP_LEFT].x = 1400;
+			tileClips[BRIDGE_CAP_LEFT].y = 0;
+			tileClips[BRIDGE_CAP_LEFT].w = TILE_WIDTH;
+			tileClips[BRIDGE_CAP_LEFT].h = TILE_HEIGHT;
+
+			tileClips[BRIDGE_CAP_TOP].x = 1600;
+			tileClips[BRIDGE_CAP_TOP].y = 0;
+			tileClips[BRIDGE_CAP_TOP].w = TILE_WIDTH;
+			tileClips[BRIDGE_CAP_TOP].h = TILE_HEIGHT;
+
+			tileClips[BRIDGE_CAP_RIGHT].x = 1800;
+			tileClips[BRIDGE_CAP_RIGHT].y = 0;
+			tileClips[BRIDGE_CAP_RIGHT].w = TILE_WIDTH;
+			tileClips[BRIDGE_CAP_RIGHT].h = TILE_HEIGHT;
+
+			tileClips[BRIDGE_CAP_BOTTOM].x = 2000;
+			tileClips[BRIDGE_CAP_BOTTOM].y = 0;
+			tileClips[BRIDGE_CAP_BOTTOM].w = TILE_WIDTH;
+			tileClips[BRIDGE_CAP_BOTTOM].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CAP_LEFT].x = 2200;
+			tileClips[CANYON_CAP_LEFT].y = 0;
+			tileClips[CANYON_CAP_LEFT].w = TILE_WIDTH;
+			tileClips[CANYON_CAP_LEFT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CAP_TOP].x = 2400;
+			tileClips[CANYON_CAP_TOP].y = 0;
+			tileClips[CANYON_CAP_TOP].w = TILE_WIDTH;
+			tileClips[CANYON_CAP_TOP].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CAP_RIGHT].x = 2600;
+			tileClips[CANYON_CAP_RIGHT].y = 0;
+			tileClips[CANYON_CAP_RIGHT].w = TILE_WIDTH;
+			tileClips[CANYON_CAP_RIGHT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CAP_BOTTOM].x = 2800;
+			tileClips[CANYON_CAP_BOTTOM].y = 0;
+			tileClips[CANYON_CAP_BOTTOM].w = TILE_WIDTH;
+			tileClips[CANYON_CAP_BOTTOM].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CORNER_BOT_LEFT].x = 3000;
+			tileClips[CANYON_CORNER_BOT_LEFT].y = 0;
+			tileClips[CANYON_CORNER_BOT_LEFT].w = TILE_WIDTH;
+			tileClips[CANYON_CORNER_BOT_LEFT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CORNER_TOP_LEFT].x = 3200;
+			tileClips[CANYON_CORNER_TOP_LEFT].y = 0;
+			tileClips[CANYON_CORNER_TOP_LEFT].w = TILE_WIDTH;
+			tileClips[CANYON_CORNER_TOP_LEFT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CORNER_TOP_RIGHT].x = 3400;
+			tileClips[CANYON_CORNER_TOP_RIGHT].y = 0;
+			tileClips[CANYON_CORNER_TOP_RIGHT].w = TILE_WIDTH;
+			tileClips[CANYON_CORNER_TOP_RIGHT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_CORNER_BOT_RIGHT].x = 3600;
+			tileClips[CANYON_CORNER_BOT_RIGHT].y = 0;
+			tileClips[CANYON_CORNER_BOT_RIGHT].w = TILE_WIDTH;
+			tileClips[CANYON_CORNER_BOT_RIGHT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_VERT].x = 3800;
+			tileClips[CANYON_VERT].y = 0;
+			tileClips[CANYON_VERT].w = TILE_WIDTH;
+			tileClips[CANYON_VERT].h = TILE_HEIGHT;
+
+			tileClips[CANYON_HORIZ].x = 4000;
+			tileClips[CANYON_HORIZ].y = 0;
+			tileClips[CANYON_HORIZ].w = TILE_WIDTH;
+			tileClips[CANYON_HORIZ].h = TILE_HEIGHT;
+		}
 	}
 
 	//Close the file
@@ -179,7 +260,7 @@ bool Game::createGameObjects()
 		return false;
 
 	// work out which tile the robot is on by its x and y coordinates
-	int tile = (static_cast<int>(digger->getPosX()) / TILE_WIDTH) + 
+	int tile = (static_cast<int>(digger->getPosX()) / TILE_WIDTH) +
 		(LEVEL_WIDTH / TILE_WIDTH) * (static_cast<int>(digger->getPosY()) / TILE_WIDTH);
 
 	digger->centreCamera(cameraMain);	// reposition the camera so it looks at the robot
@@ -226,7 +307,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	controls->render(touchLocation, cameraMain);
 	digger->render(viewportMain, cameraMain);
 	controls->renderText();
-    controls->renderScoreScreen(); // Aaron 
+	controls->renderScoreScreen();
 
 	// render mini map
 	miniMap();
@@ -248,7 +329,7 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 		}
 
 		// only allow control of the UI when preparing a function string, not during its operation
-		if (!controls->getGoButtonPressed() && !controls->getEndOfMission()) // == false
+		if (!controls->getGoButtonPressed()) // == false
 		{
 			controls->setCurrentStage(stage);
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
@@ -329,7 +410,7 @@ void Game::miniMap()
 	{
 		tileSet[i]->renderTile(cameraFullMap, renderer, tileClips);
 	}
-	
+
 	// render the robots location on the mini map as a green square
 	SDL_Rect icon = digger->getCurrentTile()->getCollisionBox();
 	icon.x -= 15;

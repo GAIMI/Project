@@ -245,11 +245,12 @@ bool UI::checkTiles(int tileIndex)
 			// check state
 			switch (tile->getType())
 			{
-			case PASSABLE:
-				break;
-			case IMPASSABLE:
-				return false;
-			case CANYON:
+			case CANYON_CAP_LEFT:
+			case CANYON_CAP_TOP:
+			case CANYON_CAP_RIGHT:
+			case CANYON_CAP_BOTTOM:
+			case CANYON_VERT:
+			case CANYON_HORIZ:
 			{	
 				bool bridgeAvail = false;
 				// check our inventory to make sure we have bridges and that they are not all used already
@@ -266,10 +267,6 @@ bool UI::checkTiles(int tileIndex)
 				if (!bridgeAvail)
 					return false;
 			}
-			case SURVIVOR:
-				break;
-			case BRIDGE_CRATE:
-				break;
 			default:
 				break;
 			}
@@ -375,9 +372,109 @@ void UI::processInventory(TileAndDirection* info)
 	// check state
 	switch (info->tile->getType())
 	{
-	case CANYON:
+	case CANYON_CAP_LEFT:
 	{
-		info->tile->setType(PASSABLE);
+		info->tile->setType(BRIDGE_CAP_LEFT);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case CANYON_CAP_TOP:
+	{
+		info->tile->setType(BRIDGE_CAP_TOP);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case CANYON_CAP_RIGHT:
+	{
+		info->tile->setType(BRIDGE_CAP_RIGHT);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case CANYON_CAP_BOTTOM:
+	{
+		info->tile->setType(BRIDGE_CAP_BOTTOM);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case CANYON_VERT:
+	{
+		info->tile->setType(BRIDGE_VERT);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case CANYON_HORIZ:
+	{
+		info->tile->setType(BRIDGE_HORIZ);
 		InventoryItem* temp = nullptr;
 		for (InventoryItem* item : inventoryItems)
 		{
@@ -421,6 +518,23 @@ void UI::processInventory(TileAndDirection* info)
 			InventoryItem* bridge = new InventoryItem;
 			bridge->tex = new Texture;
 			bridge->tex->loadFromFile(BRIDGE_ICON, renderer);
+			inventoryItems.push_back(bridge);
+			++bridges;
+			bridgesLeft = bridges;
+		}
+		break;
+	}
+	case CRATE:
+	{
+		// check we have space to hold another item
+		if (inventoryItems.size() < INVENTORY_MAX_SIZE)
+		{
+			// change the tile type to empty terrain
+			info->tile->setType(PASSABLE);
+			// create the inventory item
+			InventoryItem* bridge = new InventoryItem;
+			bridge->tex = new Texture;
+			bridge->tex->loadFromFile(SUPPLY_ICON, renderer);
 			inventoryItems.push_back(bridge);
 			++bridges;
 			bridgesLeft = bridges;

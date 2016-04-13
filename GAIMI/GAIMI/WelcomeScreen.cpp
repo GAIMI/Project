@@ -11,7 +11,6 @@ WelcomeScreen::WelcomeScreen(SDL_Window* wind, SDL_Renderer* rend) :
 	//// load up the textures
 	if (!loadMedia())
 		throw;
-
 }
 
 // destructor
