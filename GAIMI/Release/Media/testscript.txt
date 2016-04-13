@@ -1,4 +1,0 @@
-Welcome to GAIMI, Press okay to continue.
-Add movement functions to the panel at the bottom.
-Press go when you are ready to run your functions.
-Have fun!
