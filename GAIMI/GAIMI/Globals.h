@@ -65,7 +65,7 @@ const std::string TILE_OVERLAY_BLUE = "Media\\blueOverlay.png";
 
 const std::string TTF_FILE = "Media\\font.ttf";
 const std::string DEFAULT_SCRIPT_FILE = "Media\\testscript.txt";
-const std::string TOP_UI = "Media\\TopUI.jpg";
+const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
 
 const std::string EXITBUTTON_FILE = "Media\\ExitButton.png";
 const int EXITBUTTONWIDTH = 80;
@@ -176,19 +176,19 @@ const SDL_Rect GO_BUTTON = {
 	100,
 	100 };
 
-const SDL_Rect OK_BUTTON = {
-	ARROWS_RIGHT_X_POS + FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM / 2,
-	FUNCTION_SPACING_BOTTOM,
-	100,
-	100 };
-
-
 const int INVENTORY_MAX_SIZE = 4;	// how many items the robot can carry at once
 
 
 ////////// SPEECH TEXT ///////////////
 
 const int STRING_LENGTH_MAX = 50;	// the max string length before attempting to divide up
+const SDL_Point SPEECH_BOX{ 0, UI_MAIN_HEIGHT - 300 };
+
+const SDL_Rect OK_BUTTON = {
+	SPEECH_BOX.x + 700,
+	SPEECH_BOX.y + 147,
+	100,
+	100 };
 
 
 ////////// FUNCTION CONTROL ///////////
