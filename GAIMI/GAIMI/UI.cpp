@@ -1624,24 +1624,23 @@ void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
 
 void UI::renderScoreScreen()
 {
-    if (endOfMission)
+    if (endOfMission) // Rendering only triggered when at the end of the mission
     {
         SDL_RenderSetViewport(renderer, viewportFull);
-        scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
+        scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
 
         int X = (SCREEN_SIZE.w / 2) - 350;
-        for (int i = 0; i < NUMOFSTARS; i++)
+        for (int i = 0; i < NUMOFSTARS; i++) // Renders all of the blank stars on the score baackground
         {
             blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-            X += 250;
+            X += 250; // 200 star width and 50 spacing
         }
 
         X = (SCREEN_SIZE.w / 2) - 350;
-
-        for (int i = 0; i < score; i++)
+        for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
         {
             stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-            X += 250;
+            X += 250; // 200 star width and 50 spacing
         }
     }
 }
