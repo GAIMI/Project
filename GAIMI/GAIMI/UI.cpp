@@ -1,0 +1,1374 @@
+#include "UI.h"
+#include <string>
+
+
+// constructor
+UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
+	renderer(rend), text(nullptr), textRead(0), scriptOverridden(false), stringToRender(""),
+	currentText(""), viewportMain(viewportMain), templatePosX(0), templatePosY(0), useBoxPos(false), listPosition(0), 
+	numBoxes(1), gapVisible(true), goButtonPressed(false), functionPickedUp(nullptr), funcStringBoxIndex(-1), 
+	tempBoxCreated(nullptr), tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::BRIEF),
+	currentStage(MissionStages::BRIEF), codeToRender(0)
+{
+	// create viewports
+	viewportFull = new SDL_Rect({ 0, 0, SCREEN_SIZE.w, SCREEN_SIZE.h });	// full screen
+	viewportLeft = new SDL_Rect(UI_LEFT);									// left UI panel
+	viewportBottom = new SDL_Rect(UI_BOTTOM);								// bottom UI panel
+
+	// load up the textures
+	if (!loadMedia())
+		throw;
+
+	// load TTF font
+	font = TTF_OpenFont(TTF_FILE.c_str(), 36);
+	textColor = { 0, 0, 0 };
+
+	// Loads script file line by line into the vector
+	LoadScript(DEFAULT_SCRIPT_FILE, missionScript);
+	GetNextLine();
+
+
+	// left UI //
+
+	// 20 x 400 first empty inventory box
+
+	// create function button positions	
+	for (int i = 0; i < NUM_FUNCTIONS /2; ++i)	// num of rows
+	{
+		for (int j = 0; j < 2; ++j)	// num of columns
+		{
+			functionHitBoxes.push_back(new SDL_Rect{ 
+				FUNCTION_SPACING_LEFT + (j * (FUNCTION_WIDTH + FUNCTION_SPACING_LEFT)),
+				FUNCTION_SPACING_LEFT + (i * (FUNCTION_HEIGHT + FUNCTION_SPACING_LEFT)), 
+				FUNCTION_WIDTH, FUNCTION_HEIGHT });
+		}
+	}
+	// if the number of functions is odd
+	if (NUM_FUNCTIONS % 2)
+	{
+		functionHitBoxes.push_back(new SDL_Rect{
+			80,
+			FUNCTION_SPACING_LEFT + ((NUM_FUNCTIONS / 2) * (FUNCTION_HEIGHT + FUNCTION_SPACING_LEFT)),
+			FUNCTION_WIDTH, FUNCTION_HEIGHT });
+	}
+
+	// create the vector of function names
+	functionFilenames.push_back(FUNCTION_1);
+	functionFilenames.push_back(FUNCTION_2);
+	functionFilenames.push_back(FUNCTION_3);
+	functionFilenames.push_back(FUNCTION_4);
+	functionFilenames.push_back(FUNCTION_5);
+
+
+	// bottom UI //
+
+	// create function string button positions
+	for (int i = 0; i < NUM_FUNC_STRING_BOXES; ++i)
+	{
+		SDL_Rect newBox = { BOX_START_X_POS + (i * (FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM)),
+			SCREEN_SIZE.h - UI_BOTTOM_HEIGHT + FUNCTION_SPACING_BOTTOM, FUNCTION_WIDTH, FUNCTION_HEIGHT };
+		functionStringHitBoxes.push_back(newBox);
+	}
+	
+	// add the first empty box
+	Texture* emptyBox = new Texture;
+	emptyBox->loadFromFile(EMPTY_BOX, renderer);
+	functionStringBoxes.push_back(new FunctionStringBox{ functionStringHitBoxes[0], emptyBox, nullptr});
+}
+
+// destructor
+UI::~UI()
+{
+	leftPanel->free();
+	bottomPanel->free();
+	listBackButton->free();
+	listForwardButton->free();
+	goButton->free();
+	OkButton->free();
+	trashcan->free();
+
+	resetRouteMap();
+
+	if (functionTemplate != nullptr)
+		functionTemplate->free();
+
+	if (text != nullptr)
+		text->free();
+
+	if (top != nullptr)
+		top->free();
+
+	// clean up the textures in the left UI panel
+	for (auto it = functions.begin(); it != functions.end(); ++it)
+	{
+		(*it)->tex->free();
+	}
+
+	// clean up the textures in the bottom UI panel
+	for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+	{
+		(*it)->emptyBox->free();
+
+		if ((*it)->function != nullptr)
+			(*it)->function->tex->free();
+	}
+
+	//Aaron clean up stars
+	for (auto it = blankStars.begin(); it != blankStars.end(); ++it)
+	{
+		(*it)->free();
+	}
+
+	for (auto it = stars.begin(); it != stars.end(); ++it)
+	{
+		(*it)->free();
+	}
+}
+
+// create a new empty box to hold a function after a placing a function
+void UI::createFuncStringBox()
+{
+	if (!gapVisible)
+	{
+		++listPosition;
+
+		// reposition the functions and the boxes
+		for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+		{
+			(*it)->position.x -= FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+		}
+	}
+
+	// add a new empty box
+	Texture* emptyBox = new Texture;
+	emptyBox->loadFromFile(EMPTY_BOX, renderer);
+	functionStringBoxes.push_back(new FunctionStringBox{ functionStringHitBoxes[numBoxes - listPosition], emptyBox, nullptr });
+	++numBoxes;
+
+	createInsertBar(numBoxes - 3, numBoxes - 2);
+}
+
+// insert a new empty box to hold a function when hovering over a box bar
+void UI::insertFuncStringBox(int index)
+{
+	// add a new empty box
+	Texture* emptyBox = new Texture;
+	emptyBox->loadFromFile(EMPTY_BOX, renderer);
+
+	std::list<FunctionStringBox*>::iterator boxPos;
+	boxPos = functionStringBoxes.begin();
+	for (int i = 0; i < index; ++i)
+		++boxPos;
+
+	functionStringBoxes.insert(boxPos, new FunctionStringBox{ functionStringHitBoxes[index - listPosition], emptyBox, nullptr });
+	++numBoxes;
+
+	createInsertBar(numBoxes - 3, numBoxes - 2);
+
+	// reposition the functions and the boxes past it
+	int boxIndex = 0;
+	for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+	{
+		if (boxIndex == index)
+			tempBoxCreated = *it;
+
+		if (boxIndex > index)
+			(*it)->position.x += FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+
+		++boxIndex;
+	}
+}
+
+// create a bar between placed functions that will allow insertion of functions between them
+void UI::createInsertBar(int prevIndex, int nextIndex)
+{
+	Texture* boxBar = new Texture;
+	boxBar->loadFromFile(BOX_BAR, renderer);
+	boxBars.push_back(new BoxBar{boxBar, prevIndex, nextIndex });
+}
+
+// trace the route on the map checking that the current moves are valid
+bool UI::isValidMove(Texture* newFunction)
+{
+	std::string fileName = newFunction->getFileName();
+	int current = currentTile->getTileNumber();
+	int next = 0;
+
+	if (fileName == FUNCTION_1)	// move up
+	{
+		next = current - (LEVEL_WIDTH / TILE_WIDTH);
+
+		if (next < 0 || !checkTiles(next))
+			return false;
+	}
+	else if (fileName == FUNCTION_2)	// move down
+	{
+		next = current + (LEVEL_WIDTH / TILE_WIDTH);
+
+		if (next >= TOTAL_TILES || !checkTiles(next))
+			return false;
+	}
+	else if (fileName == FUNCTION_3)	// move left
+	{
+		next = current - 1;
+
+		if (currentTile->getPosX() <= 0 || !checkTiles(next))
+			return false;
+	}
+	else if (fileName == FUNCTION_4)	// move right
+	{
+		next = current + 1;
+
+		if (currentTile->getPosX() >= LEVEL_WIDTH - TILE_WIDTH || !checkTiles(next))
+			return false;
+	}
+	else if (fileName == FUNCTION_5)
+	{
+		next = current;
+		// dig sample
+	}
+	// update the current tile
+	currentTile = tiles[next];
+
+	return true;
+}
+
+// checks for valid tile moves
+bool UI::checkTiles(int tileIndex)
+{
+	// iterate the array
+	for (Tile* tile : tiles)
+	{
+		// get tile type of tile at tileIndex
+		if (tile->getTileNumber() == tileIndex)
+		{
+			// check state
+			switch (tile->getType())
+			{
+			case PASSABLE:
+				break;
+			case IMPASSABLE:
+				return false;
+			case CANYON:
+			{	
+				bool bridgeAvail = false;
+				// check our inventory to make sure we have bridges and that they are not all used already
+				for (InventoryItem* item : inventoryItems)
+				{
+					if (item->tex->getFileName() == BRIDGE_ICON && bridgesLeft > 0)
+					{
+						// we we have a spare bridge, use it and return true to say we can go there
+						--bridgesLeft;
+						bridgeAvail = true;
+						break;
+					}
+				}
+				if (!bridgeAvail)
+					return false;
+			}
+			case SURVIVOR:
+				break;
+			case BRIDGE_CRATE:
+				break;
+			default:
+				break;
+			}
+
+			// create an overlay in the next movement location
+			RouteOverlay* routeOverlay = new RouteOverlay;
+			routeOverlay->tex = new Texture;
+			routeOverlay->tex->loadFromFile(TILE_OVERLAY_BLUE, renderer);
+			routeOverlay->location.x = tile->getPosX();
+			routeOverlay->location.y = tile->getPosY();
+			routeTiles.push_back(routeOverlay);
+
+			break;
+		}
+	}
+
+	return true;
+}
+
+// when a function is deleted or inserted, re-evaluate the whole string of functions
+bool UI::checkNewFuncString()
+{
+	// set the current tile back to the start of the string (on the robot)
+	currentTile = robotTile;
+
+	resetRouteMap();
+
+	bridgesLeft = bridges;
+
+	// iterate the functions list after an insertion or deletion and check if the string of functions is still valid
+	for (Function* func : functions)
+	{
+		// if any function is invalid return false, cancelling the remainder of the insert or delete and triggering a rollback
+		if (!isValidMove(func->tex))
+			return false;
+	}
+
+	return true;
+}
+
+// delete all the route overlays ready for a fresh string
+void UI::resetRouteMap()
+{
+	// clear the route map
+	for (RouteOverlay* tile : routeTiles)
+	{
+		tile->tex->free();
+	}
+	routeTiles.clear();
+}
+
+// reset the completed flag back to false on all functions
+void UI::resetFunctions()
+{
+	// keep string after execution //
+
+	//for (auto it = functions.begin(); it != functions.end(); ++it)
+	//{
+	//	(*it)->complete = false;
+	//}
+
+	// clear the string after execution //
+
+	// free all unwanted textures
+	for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+	{
+		FunctionStringBox* box = *it;	// simplify the syntax
+
+		if (box->function != nullptr)
+		{
+			box->emptyBox->free();
+			box->function->tex->free();
+		}	
+	}
+	// delete all functions in the string
+	functions.clear();
+
+	// clear all but one box (the empty one)
+	int size = functionStringBoxes.size() - 1;
+	for (int i = 0; i < size; ++i)
+	{
+		functionStringBoxes.pop_front();
+	}
+	// reset the empty box position
+	functionStringBoxes.front()->position.x = functionStringHitBoxes[0].x;
+
+	// free up the box bar textures
+	for (auto it = boxBars.begin(); it != boxBars.end(); ++it)
+	{
+		(*it)->tex->free();
+	}
+	// clear the box bar array
+	boxBars.clear();
+
+	// reset indexing
+	listPosition = 0;
+	numBoxes = 1;
+}
+
+// work out what to do as the robot passes over a tile (pick up, put down inventory)
+void UI::processInventory(TileAndDirection* info)
+{
+	// check state
+	switch (info->tile->getType())
+	{
+	case CANYON:
+	{
+		info->tile->setType(PASSABLE);
+		InventoryItem* temp = nullptr;
+		for (InventoryItem* item : inventoryItems)
+		{
+			if (item->tex->getFileName() == BRIDGE_ICON)
+			{
+				temp = item;
+			}
+		}
+		if (temp != nullptr)
+		{
+			temp->tex->free();
+			inventoryItems.remove(temp);
+			temp = nullptr;
+			--bridges;
+		}
+		break;
+	}
+	case SURVIVOR:
+	{
+		// check we have space to hold another item
+		if (inventoryItems.size() < INVENTORY_MAX_SIZE)
+		{
+			// change the tile type to empty terrain
+			info->tile->setType(PASSABLE);
+			// create the inventory item
+			InventoryItem* survivor = new InventoryItem;
+			survivor->tex = new Texture;
+			survivor->tex->loadFromFile(SURVIVOR_ICON, renderer);
+			inventoryItems.push_back(survivor);
+		}
+		break;
+	}
+	case BRIDGE_CRATE:
+	{
+		// check we have space to hold another item
+		if (inventoryItems.size() < INVENTORY_MAX_SIZE)
+		{
+			// change the tile type to empty terrain
+			info->tile->setType(PASSABLE);
+			// create the inventory item
+			InventoryItem* bridge = new InventoryItem;
+			bridge->tex = new Texture;
+			bridge->tex->loadFromFile(BRIDGE_ICON, renderer);
+			inventoryItems.push_back(bridge);
+			++bridges;
+			bridgesLeft = bridges;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+// what ever media we need is loaded in here
+bool UI::loadMedia()
+{
+	leftPanel = new Texture;
+	bottomPanel = new Texture;
+	goButton = new Texture;
+	OkButton = new Texture;
+	listBackButton = new Texture;
+	listForwardButton = new Texture;
+	top = new Texture;
+	trashcan = new Texture;
+	scoreBackground = new Texture;
+
+
+	if (!leftPanel->loadFromFile(LEFT_UI, renderer))
+		return false;
+
+	if (!bottomPanel->loadFromFile(BOTTOM_UI, renderer))
+		return false;
+
+	if (!goButton->loadFromFile(GO_BUTTON_UI, renderer))
+		return false;
+
+	if (!OkButton->loadFromFile(OK_BUTTON_UI, renderer))
+		return false;
+
+	if (!listBackButton->loadFromFile(LIST_MOVE, renderer))
+		return false;
+
+	if (!listForwardButton->loadFromFile(LIST_MOVE, renderer))
+		return false;
+
+	if (!top->loadFromFile(TOP_UI, renderer))
+		return false;
+
+	if (!trashcan->loadFromFile(TRASHCAN, renderer))
+		return false;
+
+	if (!scoreBackground->loadFromFile(SCOREBACKGROUND_FILE, renderer))
+		return false;
+
+	return true;
+}
+
+
+
+// inputs //
+
+void UI::touchInputHandler(SDL_Event& event, float& frameTime, SDL_Point& touchLocation, 
+	SDL_Rect& camera, const SDL_Rect& screenSize)
+{
+	////////////////
+	// touch down //
+	////////////////
+	if (event.type == SDL_FINGERDOWN)
+	{
+		touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
+		touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
+
+		downPresses(touchLocation);
+	}
+	//////////////////
+	// touch motion //
+	//////////////////
+	else if (event.type == SDL_FINGERMOTION)
+	{
+		touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
+		touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
+
+		pressReleases(touchLocation);
+	}
+	///////////////////
+	// touch release //
+	///////////////////
+	else if (event.type == SDL_FINGERUP)
+	{
+		touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
+		touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
+
+		motion(touchLocation, camera);
+	}
+}
+void UI::mouseInputHandler(SDL_Event& event, float& frameTime, SDL_Point& touchLocation, 
+	SDL_Rect& camera)
+{	
+	//////////////////////////
+	// mouse button clicked //
+	//////////////////////////
+	if (event.type == SDL_MOUSEBUTTONDOWN)
+	{
+		touchLocation.x = event.button.x;
+		touchLocation.y = event.button.y;
+
+		downPresses(touchLocation);
+	}
+
+	///////////////////////////
+	// mouse button released //
+	///////////////////////////
+	if (event.type == SDL_MOUSEBUTTONUP)
+	{
+		pressReleases(touchLocation);
+	}
+
+	//////////////////
+	// mouse motion //
+	//////////////////
+	if (event.type == SDL_MOUSEMOTION)
+	{
+		touchLocation.x = event.button.x;
+		touchLocation.y = event.button.y;
+
+		motion(touchLocation, camera);
+	}
+}
+
+// input segregation
+
+void UI::downPresses(SDL_Point& touchLocation)
+{
+	// if the mouse is over the left UI panel //
+	if (touchLocation.x > 0 && touchLocation.x < viewportLeft->w && touchLocation.y > 0 && touchLocation.y < viewportLeft->h)
+	{
+		downLeftUI(touchLocation);
+	}
+
+	// if the mouse is over the bottom UI panel //
+	else if (touchLocation.x > viewportBottom->x && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > viewportBottom->y && touchLocation.y < SCREEN_SIZE.h)
+	{
+		downBottomUI(touchLocation);
+	}
+
+	// if mouse is over the map //
+	else if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
+	{
+		downMainWindowUI(touchLocation);
+	}
+}
+void UI::pressReleases(SDL_Point& touchLocation)
+{
+	// we stop the map from dragging with mouse movement
+	mapDrag = false;
+
+	// if the mouse is over the bottom UI panel //
+	if (touchLocation.x > viewportBottom->x && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > viewportBottom->y && touchLocation.y < SCREEN_SIZE.h)
+	{
+		upBottomUI(touchLocation);
+	}
+
+	// we reset the function back where we found it
+	else if (functionPickedUp != nullptr)
+	{
+		functionPickedUp->function->tex->loadFromFile(functionTemplate->getFileName(), renderer);
+
+		functionTemplate->free();
+
+		// reset the functionPickedUp var
+		functionPickedUp = nullptr;
+	}
+
+	//clear the template
+	else if (functionTemplate != nullptr && functionTemplate->getTexture() != nullptr)
+		functionTemplate->free();
+}
+void UI::motion(SDL_Point& touchLocation, SDL_Rect& camera)
+{
+	// if the mouse is over the left UI panel //
+	if (touchLocation.x > 0 && touchLocation.x < viewportLeft->w &&
+		touchLocation.y > 0 && touchLocation.y < viewportLeft->h)
+	{
+		motionLeftUI(touchLocation);
+	}
+
+	// if the mouse is over the bottom UI panel //
+	else if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > viewportBottom->y && touchLocation.y < SCREEN_SIZE.h)
+	{
+		motionBottomUI(touchLocation);
+	}
+
+	// if mouse is over the map //
+	else if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
+	{
+		motionMainWindowUI(touchLocation, camera);
+	}
+}
+
+// input code
+
+void UI::downLeftUI(SDL_Point& touchLocation)
+{
+	// if the mouse is over a button when clicked, a function template is created
+	// that will follow the mouse pointer around the screen
+	for (auto functionBox = functionHitBoxes.begin(); functionBox != functionHitBoxes.end(); ++functionBox)
+	{
+		SDL_Rect* box = (*functionBox);
+		int position = functionBox - functionHitBoxes.begin();
+
+		if (touchLocation.x > box->x && touchLocation.x < box->x + box->w &&
+			touchLocation.y >box->y && touchLocation.y < box->y + box->h)
+		{
+			// if no template has been created before, memory is allocated, else it frees up the current template
+			if (functionTemplate == nullptr)
+				functionTemplate = new Texture;
+
+			functionTemplate->loadFromFile(functionFilenames.at(position), renderer);
+		}
+	}
+}
+void UI::downBottomUI(SDL_Point& touchLocation)
+{
+	// go button pressed
+	if (touchLocation.x > viewportBottom->x + GO_BUTTON.x &&
+		touchLocation.x < viewportBottom->x + GO_BUTTON.x + GO_BUTTON.w &&
+		touchLocation.y > viewportBottom->y + GO_BUTTON.y &&
+		touchLocation.y < viewportBottom->y + GO_BUTTON.y + GO_BUTTON.h)
+	{
+		// make sure we have something to run
+		if (functions.size() > 0)
+		{
+			// process all movement
+			goButtonPressed = true;
+
+			// clear the function template from the cursor if there is one
+			if (functionTemplate != nullptr)
+				functionTemplate->free();
+		}
+		else
+		{
+			scriptOverridden = true;
+			stringToRender = "No functions selected!";
+		}
+	}
+
+	// if over the left single arrow (1 step backward)
+	else if (touchLocation.x > viewportBottom->x + ARROWS_LEFT_X_POS + FUNCTION_WIDTH / 2 &&
+		touchLocation.x < viewportBottom->x + ARROWS_LEFT_X_POS + FUNCTION_WIDTH &&
+		touchLocation.y > viewportBottom->y + ARROWS_LEFT_Y_POS &&
+		touchLocation.y < viewportBottom->y + ARROWS_LEFT_Y_POS + FUNCTION_HEIGHT)
+	{
+		if (listPosition > 0)
+		{
+			--listPosition;
+
+			// reposition the functions and the boxes
+			for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+			{
+				(*it)->position.x += FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+			}
+		}
+	}
+	// if over the left double arrow (back to start)
+	else if (touchLocation.x > viewportBottom->x + ARROWS_LEFT_X_POS &&
+		touchLocation.x < viewportBottom->x + ARROWS_LEFT_X_POS + FUNCTION_WIDTH / 2 &&
+		touchLocation.y > viewportBottom->y + ARROWS_LEFT_Y_POS &&
+		touchLocation.y < viewportBottom->y + ARROWS_LEFT_Y_POS + FUNCTION_HEIGHT)
+	{
+		if (listPosition > 0)
+		{
+			for (int i = 0; i < listPosition; ++i)
+			{
+				// reposition the functions and the boxes
+				for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+				{
+					(*it)->position.x += FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+				}
+			}
+			listPosition = 0;
+		}
+	}
+	// if over the right single arrow (1 step forward)
+	else if (touchLocation.x > viewportBottom->x + ARROWS_RIGHT_X_POS &&
+		touchLocation.x < viewportBottom->x + ARROWS_RIGHT_X_POS + FUNCTION_WIDTH / 2 &&
+		touchLocation.y > viewportBottom->y + ARROWS_RIGHT_Y_POS &&
+		touchLocation.y < viewportBottom->y + ARROWS_RIGHT_Y_POS + FUNCTION_HEIGHT)
+	{
+		if (listPosition < numBoxes - NUM_FUNC_STRING_BOXES)
+		{
+			++listPosition;
+
+			// reposition the functions and the boxes
+			for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+			{
+				(*it)->position.x -= FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+			}
+		}
+	}
+	// if over the right double arrow (skip to end)
+	else if (touchLocation.x > viewportBottom->x + ARROWS_RIGHT_X_POS + FUNCTION_WIDTH / 2 &&
+		touchLocation.x < viewportBottom->x + ARROWS_RIGHT_X_POS + FUNCTION_WIDTH &&
+		touchLocation.y > viewportBottom->y + ARROWS_RIGHT_Y_POS &&
+		touchLocation.y < viewportBottom->y + ARROWS_RIGHT_Y_POS + FUNCTION_HEIGHT)
+	{
+		while (listPosition < numBoxes - NUM_FUNC_STRING_BOXES)
+		{
+			// reposition the functions and the boxes
+			for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+			{
+				(*it)->position.x -= FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+			}
+
+			++listPosition;
+		}
+	}
+
+	// check if over any of the boxes
+	int index = 0;
+	for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+	{
+		FunctionStringBox* box = *it;
+
+		if (touchLocation.x > box->position.x && touchLocation.x < box->position.x + FUNCTION_WIDTH &&
+			touchLocation.y > box->position.y && touchLocation.y < box->position.y + FUNCTION_HEIGHT)
+		{
+			// if theres something in that box and we're actually over one of the displayed boxes
+			if (box->function && index >= listPosition && index < listPosition + NUM_FUNC_STRING_BOXES)
+			{
+				// create a function template of that function
+				functionTemplate->loadFromFile(box->function->tex->getFileName(), renderer);
+
+				// clear the box function texture, leaving it visually an empty box (leaving the function still there though)
+				box->function->tex->free();
+				functionPickedUp = box;
+				funcStringBoxIndex = index;
+				break;
+			}
+		}
+		++index;
+	}
+}
+void UI::downMainWindowUI(SDL_Point& touchLocation)
+{
+	// ok button pressed
+	if (touchLocation.x > viewportLeft->w && touchLocation.x < GO_BUTTON.w + viewportLeft->w &&
+		touchLocation.y > 100 && touchLocation.y < 200)
+	{
+		// TEST: of script increment
+		if (scriptOverridden)
+		{
+			scriptOverridden = false;
+			stringToRender = "";
+		}
+		else
+		{
+			if (textRead < static_cast<int>(missionScript.size()))
+			{
+				// check to see if the next string is the same code as the previous (same dialog)  
+				// or we've moved on to the next mission stage (unlocking more dialog)
+				if (missionScript[textRead]->code == missionScript[textRead - 1]->code || previousStage != currentStage)
+				{
+					previousStage = currentStage;
+					GetNextLine(); // Gets next line and increments textRead value
+				}
+			}
+			else
+				stringToRender = "";
+		}
+
+		// clear the function template from the cursor if there is one
+		if (functionTemplate != nullptr)
+			functionTemplate->free();
+	}
+
+	// if anywhere else on the map
+	else
+	{
+		mapDrag = true;
+		mapLocation.x = touchLocation.x;
+		mapLocation.y = touchLocation.y;
+	}
+}
+
+void UI::upBottomUI(SDL_Point& touchLocation)
+{
+	// if over an empty function string box in the bottom UI panel with a selected function
+	if (useBoxPos && functionPickedUp == nullptr)
+	{
+		// providing we have a template selected and is attached to our mouse pointer
+		if (functionTemplate != nullptr && functionTemplate->getTexture() != nullptr)
+		{
+			// when we release the mouse button we create a Texture in the image of the template at the template location
+			// that will be added to a vector array and paired up with its location for rendering
+			Function* newFunction = new Function;
+
+			newFunction->tex = new Texture;
+
+			//newFunction->loadFromFile(functionTemplate->getFileName().insert(6, "Fullsize"), renderer);
+			newFunction->tex->loadFromFile(functionTemplate->getFileName(), renderer);
+			newFunction->complete = false;
+
+			if (tempBoxCreated != nullptr)
+			{
+				std::list<Function*>::iterator boxPos;
+				boxPos = functions.begin();
+				for (int i = 0; i < tempIndex; ++i)
+					++boxPos;
+
+				functions.insert(boxPos, newFunction);
+
+				// if a valid change to the function string
+				if (checkNewFuncString())
+				{
+					int i = 0;
+					for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+					{
+						if (i == tempIndex)
+						{
+							(*it)->function = newFunction;
+							break;
+						}
+
+						++i;
+					}
+				}
+				else
+				{
+					// if the new string of functions is invalid, rollback
+					functions.remove(newFunction);
+					newFunction->tex->free();
+					delete newFunction;
+					tempBoxCreated->emptyBox->free();
+					functionStringBoxes.remove(tempBoxCreated);
+					boxBars.back()->tex->free();
+					boxBars.pop_back();
+					--numBoxes;
+
+					// rerun the route map check to highlight the old route again
+					checkNewFuncString();
+
+					// reposition any boxes after the deleted box
+					int index = 0;
+					for (auto box = functionStringBoxes.begin(); box != functionStringBoxes.end(); ++box)
+					{
+						if (index >= tempIndex)
+						{
+							(*box)->position.x = (*box)->position.x - FUNCTION_WIDTH - FUNCTION_SPACING_BOTTOM;
+						}
+						++index;
+					}
+				}
+
+				tempBoxCreated = nullptr;
+			}
+			else
+				// if no temp box created (adding to the end of the string)
+			{
+				if (isValidMove(functionTemplate))
+				{
+					functions.push_back(newFunction);
+					functionStringBoxes.back()->function = newFunction;
+
+					// add a new box to be filled
+					createFuncStringBox();
+
+					if (numBoxes - listPosition >= NUM_FUNC_STRING_BOXES)
+						gapVisible = false;
+					else
+						gapVisible = true;
+				}
+				else
+				{
+					// we dont need the new function as it wasn't placed
+					newFunction->tex->free();
+					delete newFunction;
+				}
+			}
+
+			// clear the template
+			functionTemplate->free();
+		}
+	}
+	// if we're holding a function from the function string
+	else if (functionPickedUp != nullptr)
+	{
+		// if over the trashcan viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT
+		if (touchLocation.x > SCREEN_SIZE.w - TRASHCAN_WIDTH && touchLocation.x < SCREEN_SIZE.w &&
+			touchLocation.y > SCREEN_SIZE.h - TRASHCAN_HEIGHT && touchLocation.y < SCREEN_SIZE.h)
+		{
+			// clear the template
+			functionTemplate->free();
+
+			Function* tempFunc = new Function;
+			tempFunc->tex = new Texture;
+			tempFunc->tex->loadFromFile(functionPickedUp->function->tex->getFileName(), renderer);
+
+			// clear the function from its list
+			functions.remove(functionPickedUp->function);
+
+			// if a valid change to the function string
+			if (checkNewFuncString())
+			{
+				// clean up our tempFunc as not needed
+				tempFunc->tex->free();
+				delete tempFunc;
+
+				// clear the box texture and remove the box from its list
+				functionPickedUp->emptyBox->free();
+				functionStringBoxes.remove(functionPickedUp);
+				--numBoxes;
+
+				// reset the functionPickedUp var
+				functionPickedUp = nullptr;
+
+				// reposition any boxes after the deleted box
+				int index = 0;
+				for (auto box = functionStringBoxes.begin(); box != functionStringBoxes.end(); ++box)
+				{
+					if (index >= funcStringBoxIndex)
+					{
+						(*box)->position.x = (*box)->position.x - FUNCTION_WIDTH - FUNCTION_SPACING_BOTTOM;
+					}
+					++index;
+				}
+
+				// remove the end box bar
+				boxBars[numBoxes - 1]->tex->free();
+				boxBars.pop_back();
+			}
+			else
+			{
+				// rollback and clean up //
+
+				functionPickedUp->function->tex->loadFromFile(tempFunc->tex->getFileName(), renderer);
+
+				// get an iterator position for funcStringBoxIndex
+				std::list<Function*>::iterator boxPos;
+				boxPos = functions.begin();
+				for (int i = 0; i < funcStringBoxIndex; ++i)
+					++boxPos;
+
+				functions.insert(boxPos, functionPickedUp->function);
+				tempFunc->tex->free();
+				delete tempFunc;
+
+				functionTemplate->free();
+
+				// reset the functionPickedUp var
+				functionPickedUp = nullptr;
+
+				// rerun the route map check to highlight the old route again
+				checkNewFuncString();
+			}
+		}
+		// we reset the function back where we found it
+		else
+		{
+			functionPickedUp->function->tex->loadFromFile(functionTemplate->getFileName(), renderer);
+
+			functionTemplate->free();
+
+			// reset the functionPickedUp var
+			functionPickedUp = nullptr;
+		}
+	}
+	//clear the template
+	else if (functionTemplate != nullptr && functionTemplate->getTexture() != nullptr)
+		functionTemplate->free();
+}
+
+void UI::motionLeftUI(SDL_Point& touchLocation)
+{
+	bool skip = false;
+	// go through each button location
+	for (auto functionBox = functionHitBoxes.begin(); functionBox != functionHitBoxes.end(); ++functionBox)
+	{
+		SDL_Rect* box = (*functionBox);
+
+		int position = functionBox - functionHitBoxes.begin(); // Index of the box
+
+																// if the mouse is over a button
+		if (touchLocation.x > box->x && touchLocation.x < box->x + box->w &&
+			touchLocation.y > box->y && touchLocation.y < box->y + box->h)
+		{
+			// we only want to select a new button if we're not holding a template
+			//if (functionTemplate == nullptr || functionTemplate->getTexture() == nullptr)	// optional
+			{
+				// if no memory allocation has yet been made for the selection texture, allocate it
+				if (functionSelect.first == nullptr)
+				{
+					functionSelect.first = new Texture;
+					functionSelect.second = new SDL_Point;
+				}
+				else if (functionSelect.first->getTexture() != nullptr)
+				{
+					// if we are not over the same button, free up the texture
+					if (functionSelect.second->x != box->x && functionSelect.second->y != box->y)
+					{
+						functionSelect.first->free();
+					}
+					// otherwise we are over the same image as previously allocated so we don't want
+					// to waste performance re-assigning variables to the same thing
+					else
+						skip = true;
+				}
+
+				// set the variables and image if over a new button
+				if (!skip)
+				{
+					functionSelect.first->loadFromFile(functionFilenames.at(position), renderer);
+					functionSelect.second->x = box->x;
+					functionSelect.second->y = box->y;
+				}
+			}
+			break;
+		}
+		// if we're not over a button, free up the texture
+		else if (functionSelect.first != nullptr && functionSelect.first->getTexture() != nullptr)
+			functionSelect.first->free();
+	}
+}
+void UI::motionBottomUI(SDL_Point& touchLocation)
+{
+	// go through each box position
+	int index = 0;
+	for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+	{
+		FunctionStringBox* box = *it;
+
+		// check if over any of the box bars
+		if (touchLocation.x > box->position.x - 20 && touchLocation.x < box->position.x - BOX_BAR_WIDTH &&
+			touchLocation.y > box->position.y && touchLocation.y < box->position.y + FUNCTION_HEIGHT)
+		{
+			// don't render anything thats outside the boundaries
+			if (index >= listPosition && index < listPosition + NUM_FUNC_STRING_BOXES && index < static_cast<int>(boxBars.size()))
+			{
+				// if we have a template selected
+				if (functionTemplate != nullptr && functionTemplate->getTexture() != nullptr && tempBoxCreated == nullptr)
+				{
+					insertFuncStringBox(index);
+					tempIndex = index;
+					break;
+				}
+			}
+		}
+
+		// check if over any of the boxes
+		else if (touchLocation.x > box->position.x && touchLocation.x < box->position.x + FUNCTION_WIDTH &&
+			touchLocation.y > box->position.y && touchLocation.y < box->position.y + FUNCTION_HEIGHT)
+		{
+			// if theres not something already in that box
+			if (!box->function)
+			{
+				if ((numBoxes - listPosition <= NUM_FUNC_STRING_BOXES && tempBoxCreated == nullptr) ||
+					tempBoxCreated != nullptr)
+				{
+					// if we have a template selected
+					if (functionTemplate != nullptr && functionTemplate->getTexture() != nullptr)
+					{
+						templatePosX = box->position.x;
+						templatePosY = box->position.y;
+						useBoxPos = true;
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			// if a temp box has been made
+			if (tempBoxCreated != nullptr)
+			{
+				// else if not over the temp box bar and box area
+				if (touchLocation.x < tempBoxCreated->position.x - 20 || touchLocation.x > tempBoxCreated->position.x + FUNCTION_WIDTH ||
+					touchLocation.y < tempBoxCreated->position.y || touchLocation.y > tempBoxCreated->position.y + FUNCTION_HEIGHT)
+				{
+					// remove the temp box and temp box bar
+					functionStringBoxes.remove(tempBoxCreated);
+					--numBoxes;
+
+					tempBoxCreated = nullptr;
+
+					// remove the extra box bar
+					boxBars.pop_back();
+
+					// reposition the functions and the boxes past it
+					int boxIndex = 0;
+					for (auto it = functionStringBoxes.begin(); it != functionStringBoxes.end(); ++it)
+					{
+						if (boxIndex >= tempIndex)
+						{
+							(*it)->position.x -= FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;
+						}
+
+						++boxIndex;
+					}
+					useBoxPos = false;
+					break;
+				}
+			}
+			// if not over a box, render the function template at the mouse pointer
+			useBoxPos = false;
+		}
+
+		++index;
+	}
+}
+void UI::motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera)
+{
+	if (mapDrag)
+	{
+		// drag the map
+		camera.x -= touchLocation.x - mapLocation.x;
+		camera.y -= touchLocation.y - mapLocation.y;
+
+		// update map location so we don't compound the effect
+		mapLocation.x = touchLocation.x;
+		mapLocation.y = touchLocation.y;
+
+		//Keep the camera in bounds
+		if (camera.x < 0)
+			camera.x = 0;
+
+		if (camera.y < 0)
+			camera.y = 0;
+
+		if (camera.x > LEVEL_WIDTH - camera.w)
+			camera.x = LEVEL_WIDTH - camera.w;
+
+		if (camera.y > LEVEL_HEIGHT - camera.h)
+			camera.y = LEVEL_HEIGHT - camera.h;
+	}
+}
+
+
+
+// script //
+
+bool UI::LoadScript(std::string filePath, std::vector<MissionText*>& missionScript)
+{
+	std::ifstream inFile;
+
+	inFile.open(filePath);
+	if (inFile.fail())
+	{
+		//printf("Error, file not found \n");
+		return false;
+	}
+
+	std::string line;
+	while (std::getline(inFile, line))
+	{
+		std::string code;
+		// read the string and extract the code at the start
+		for (char ch : line)
+		{
+			if (ch != ' ')
+				code += ch;
+			else
+				break;
+		}
+		// remove the code and the space from the string
+		if (code != "")
+			line = line.substr(code.size() + 1, line.size() - (code.size() + 1));
+
+		// create the MissionScript object, storing both the string (minus the code) and the code seperate
+		MissionText* text = new MissionText;
+		text->line = line;
+		text->code = atoi(code.c_str());
+
+		missionScript.push_back(text);
+	}
+	return true;
+
+}
+
+//Getter that checks range and also increments the value
+void UI::GetNextLine()
+{
+	if (textRead < static_cast<int>(missionScript.size()))
+	{
+		MissionText* text = missionScript.at(textRead);
+		++textRead;
+
+		stringToRender = text->line;
+		codeToRender = text->code;
+	}
+	else
+		stringToRender = "";
+}
+
+
+
+// rendering //
+
+// render the UI to the screen
+void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
+{
+	// render to the left view port //
+
+	// set viewports and render textures to screen
+	SDL_RenderSetViewport(renderer, viewportLeft);
+
+	leftPanel->renderMedia(0, 0, renderer);
+	//SDL_RenderCopy(renderer, leftPanel->getTexture(), 0, 0);
+
+	// render the inventory
+	int inventIndexRow = 0;
+	int inventIndexCol = 0;
+	for (InventoryItem* item : inventoryItems)
+	{
+		item->tex->renderMedia(FUNCTION_SPACING_LEFT + (inventIndexCol * (FUNCTION_WIDTH + FUNCTION_SPACING_LEFT)), 
+			400 + (inventIndexRow * (FUNCTION_HEIGHT + FUNCTION_SPACING_LEFT)), renderer);
+
+		if (inventIndexCol == 1)
+		{
+			inventIndexCol = 0;
+			++inventIndexRow;
+		}
+		else
+			++inventIndexCol;
+	}
+
+	// render the bottom view port textures //
+
+	SDL_RenderSetViewport(renderer, viewportBottom);
+	bottomPanel->renderMedia(0, 0, renderer);
+	listBackButton->renderMedia(ARROWS_LEFT_X_POS, ARROWS_LEFT_Y_POS, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
+	listForwardButton->renderMedia(ARROWS_RIGHT_X_POS, ARROWS_RIGHT_Y_POS, renderer);
+	trashcan->renderMedia(viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT, renderer);
+	goButton->renderMedia(GO_BUTTON.x, GO_BUTTON.y, renderer);
+
+	// render to the main view port (map) //
+
+	SDL_RenderSetViewport(renderer, viewportMain);
+
+	// render route overlays
+	SDL_RenderSetViewport(renderer, viewportMain);
+	for (RouteOverlay* tile : routeTiles)
+	{
+		tile->tex->renderMedia(tile->location.x - camera.x, tile->location.y - camera.y, renderer);
+	}
+
+	OkButton->renderMedia(0, 100, renderer);
+
+	// render to full screen //
+
+	// set viewport
+	SDL_RenderSetViewport(renderer, viewportFull);
+
+	// render the function template
+	if (functionTemplate != nullptr)
+	{
+		// if over an empty function string box, snap into position
+		if (useBoxPos && functionPickedUp == nullptr)
+			functionTemplate->renderMedia(templatePosX, templatePosY, renderer);
+		else
+			functionTemplate->renderMedia(touchLocation.x - functionTemplate->getWidth() / 2, touchLocation.y - functionTemplate->getHeight() / 2, renderer);
+	}
+
+	if (functionSelect.first != nullptr && functionSelect.first->getTexture() != nullptr)
+	{
+		functionSelect.first->renderMedia(functionSelect.second->x, functionSelect.second->y, renderer);
+	}
+
+	// render the function string boxes
+	int index = 0;
+	for (auto function = functionStringBoxes.begin(); function != functionStringBoxes.end(); ++function)
+	{
+		// don't render anything thats outside the boundaries
+		if (index < listPosition)
+		{
+			++index;
+			continue;
+		}
+		else if (index >= listPosition + NUM_FUNC_STRING_BOXES)
+		{
+			break;
+		}
+
+		SDL_Rect pos = (*function)->position;
+
+		(*function)->emptyBox->renderMedia(pos.x, pos.y, renderer);
+
+		if ((*function)->function != nullptr)
+			(*function)->function->tex->renderMedia(pos.x, pos.y, renderer);
+
+		// render the box bar to the left of the rendered box
+		if (index < static_cast<int>(boxBars.size()))
+			boxBars[index]->tex->renderMedia(pos.x - 20, pos.y, renderer);
+
+		++index;
+	}
+}
+
+bool UI::renderText()
+{
+	if (text == nullptr)
+		text = new Texture;
+
+	//Render text
+	if (currentText != stringToRender)
+	{
+		if (stringToRender != "")
+		{
+			if (!text->loadText(stringToRender, textColor, renderer, font))
+			{
+				return false;
+			}
+		}
+		currentText = stringToRender;
+	}
+
+	if (currentText != "")
+	{
+		top->renderMedia(0, viewportMain->h - 60, renderer);
+		text->renderMedia(10, viewportMain->h - 50, renderer);
+	}
+
+	return true;
+}
+
+void UI::renderScoreScreen()
+{
+	if (endOfMission)
+	{
+		SDL_RenderSetViewport(renderer, viewportFull);
+		scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
+
+		int X = (SCREEN_SIZE.w / 2) - 350;
+		for (int i = 0; i < NUMOFSTARS; i++)
+		{
+			blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+			X += 250;
+		}
+
+		X = (SCREEN_SIZE.w / 2) - 350;
+
+		for (int i = 0; i < score; i++)
+		{
+			stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+			X += 250;
+		}
+
+	}
+
+}
