@@ -570,6 +570,8 @@ bool UI::loadMedia()
 	trashcan = new Texture;
     openTrashcan = new Texture;
 	scoreBackground = new Texture;
+    exitButton = new Texture;
+    clearButton = new Texture;
 
 
 	if (!leftPanel->loadFromFile(LEFT_UI, renderer))
@@ -599,6 +601,11 @@ bool UI::loadMedia()
     if (!openTrashcan->loadFromFile(OPEN_TRASHCAN, renderer))
         return false;
 
+    if (!exitButton->loadFromFile(EXITBUTTON_FILE, renderer))
+        return false;
+
+    if (!clearButton->loadFromFile(CLEARBUTTON_FILE, renderer))
+        return false;
 
 	if (!scoreBackground->loadFromFile(SCOREBACKGROUND_FILE, renderer))
 		return false;
@@ -774,6 +781,27 @@ void UI::downLeftUI(SDL_Point& touchLocation)
 			functionTemplate->loadFromFile(functionFilenames.at(position), renderer);
 		}
 	}
+
+    //Exit and clear reset
+    if (touchLocation.x > viewportLeft->x + 20 &&
+        touchLocation.x < viewportLeft->x + 20 + EXITBUTTONWIDTH &&
+        touchLocation.y > viewportLeft->y + SCREEN_SIZE.h - 80 &&
+        touchLocation.y < viewportLeft->y + SCREEN_SIZE.h - 80 + EXITBUTTONHEIGHT)
+    {
+        //Exit    
+        quitGame = true;
+    }
+    
+    // Reset
+    if (touchLocation.x > viewportLeft->x + 120 &&
+        touchLocation.x < viewportLeft->x + 120 + CLEARBUTTONWIDTH &&
+        touchLocation.y > viewportLeft->y + SCREEN_SIZE.h - 70 &&
+        touchLocation.y < viewportLeft->y + SCREEN_SIZE.h - 70 + CLEARBUTTONHEIGHT)
+    {
+        
+
+    }
+
 }
 void UI::downBottomUI(SDL_Point& touchLocation)
 {
@@ -1382,6 +1410,9 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 	SDL_RenderSetViewport(renderer, viewportLeft);
 
 	leftPanel->renderMedia(0, 0, renderer);
+    exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
+    clearButton->renderMedia(120, SCREEN_SIZE.h - 70, renderer);
+
 	//SDL_RenderCopy(renderer, leftPanel->getTexture(), 0, 0);
 
 	// render the inventory

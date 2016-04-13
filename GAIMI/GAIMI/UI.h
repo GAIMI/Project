@@ -29,6 +29,8 @@ private:
 	Texture* functionTemplate;
 	Texture* top;	//backdrop for text on the map viewport
     Texture* scoreBackground;
+    Texture* exitButton;
+    Texture* clearButton;
     
 	TTF_Font* font;
 
@@ -54,6 +56,7 @@ private:
 	int templatePosY;	// used when the template is over an empty function string box
 
     bool overTrashcan = false;
+    bool quitGame = false;
 
     // score //
 
@@ -144,6 +147,7 @@ public:
 
 	std::list<Function*>& getFunctionsList() { return functions; }
 
+    bool getExit() { return quitGame; }
 	bool getGoButtonPressed() { return goButtonPressed; }
 	Tile*& getCurrentTile() { return currentTile; }
     bool getEndOfMission() { return endOfMission; }
