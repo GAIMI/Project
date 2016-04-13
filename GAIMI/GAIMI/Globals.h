@@ -36,7 +36,7 @@ const std::string LEFT_UI = "Media\\Left_UI.png";
 const std::string BOTTOM_UI = "Media\\BottomUI.jpg";
 const std::string ROBOT_TEX = "Media\\Robot.png";
 const std::string MAP_1 = "Media\\MarsSheet.png";
-const std::string MAP_1_MAP = "Media\\mars.map";
+const std::string MAP_1_MAP = "Media\\mars1.map";
 
 const std::string GO_BUTTON_UI = "Media\\GoButton.png";
 const std::string OK_BUTTON_UI = "media\\OkButton.png";
