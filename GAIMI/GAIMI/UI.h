@@ -170,7 +170,7 @@ public:
 	//Prints text to the screen
 	bool renderText();
 	bool LoadScript(std::string filePath, std::vector<MissionText*>& missionScript);
-	void GetNextLine();
+	void getNextLine();
 
 	// handling touch input
 	void touchInputHandler(SDL_Event& e, float& frameTime, SDL_Point& touchLocation, SDL_Rect& camera, 

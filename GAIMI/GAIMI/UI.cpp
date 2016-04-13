@@ -25,7 +25,7 @@ UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
 
 	// Loads script file line by line into the vector
 	LoadScript(DEFAULT_SCRIPT_FILE, missionScript);
-	GetNextLine();
+	getNextLine();
 
 
 	// left UI //
@@ -917,7 +917,7 @@ void UI::downMainWindowUI(SDL_Point& touchLocation)
 				if (missionScript[textRead]->code == missionScript[textRead - 1]->code || previousStage != currentStage)
 				{
 					previousStage = currentStage;
-					GetNextLine(); // Gets next line and increments textRead value
+					getNextLine(); // Gets next line and increments textRead value
 				}
 			}
 			else
@@ -1354,8 +1354,8 @@ bool UI::LoadScript(std::string filePath, std::vector<MissionText*>& missionScri
 
 }
 
-//Getter that checks range and also increments the value
-void UI::GetNextLine()
+// getter that checks range and also increments the value
+void UI::getNextLine()
 {
 	stringToRender.clear();
 
@@ -1524,7 +1524,6 @@ bool UI::renderText()
 	return true;
 }
 
-
 // divide up the textual strings that are spoken by the Dr and Prof (recursive)
 void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
 {
@@ -1554,7 +1553,8 @@ void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
 		stringToRender[stringNum] = stringToRender[stringNum].substr(0, actualStringLength);
 
 		// remove the space at the start of the second string
-		stringToRender[stringNum + 1].pop_back();
+		stringToRender[stringNum + 1] = stringToRender[stringNum + 1].substr(
+			1, static_cast<int>(stringToRender[stringNum + 1].size()) - 1);
 
 		divideString(stringToRender, stringNum + 1);
 	}
