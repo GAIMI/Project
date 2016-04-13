@@ -36,7 +36,7 @@ const std::string LEFT_UI = "Media\\Left_UI.png";
 const std::string BOTTOM_UI = "Media\\BottomUI.jpg";
 const std::string ROBOT_TEX = "Media\\Robot.png";
 const std::string MAP_1 = "Media\\MarsSheet.png";
-const std::string MAP_1_MAP = "Media\\mars1.map";
+const std::string MAP_1_MAP = "Media\\mars2.map";
 
 const std::string GO_BUTTON_UI = "Media\\GoButton.png";
 const std::string OK_BUTTON_UI = "media\\OkButton.png";
@@ -157,7 +157,7 @@ const int TRASHCAN_HEIGHT = 144;
 const int NUM_FUNC_STRING_BOXES = 9;	// how many boxes will be displayed on the screen at any one time
 const int BOX_START_X_POS = UI_LEFT_WIDTH + 20 + FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM;	// the x position at the right side of the left set of iterate arrows
 
-																							// top left corner position of the iterator arrows in the bottom UI panel (with relation to the viewport, not the screen)
+// top left corner position of the iterator arrows in the bottom UI panel (with relation to the viewport, not the screen)
 const int ARROWS_LEFT_X_POS = 20;
 const int ARROWS_LEFT_Y_POS = FUNCTION_SPACING_BOTTOM;
 const int ARROWS_RIGHT_X_POS = 20 + (NUM_FUNC_STRING_BOXES + 1) * (FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM);
@@ -179,9 +179,14 @@ const SDL_Rect OK_BUTTON = {
 const int INVENTORY_MAX_SIZE = 4;	// how many items the robot can carry at once
 
 
-									////////// FUNCTION CONTROL ///////////
+////////// SPEECH TEXT ///////////////
 
-									// the function held in the function string boxes
+const int STRING_LENGTH_MAX = 50;	// the max string length before attempting to divide up
+
+
+////////// FUNCTION CONTROL ///////////
+
+// the function held in the function string boxes
 struct Function
 {
 	Texture* tex;

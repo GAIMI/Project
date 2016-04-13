@@ -28,8 +28,6 @@ private:
     Texture* openTrashcan;
 	Texture* functionTemplate;
 	Texture* top;	//backdrop for text on the map viewport
-	Texture* text;
-    //Aaron Changes
     Texture* scoreBackground;
     
 	TTF_Font* font;
@@ -42,9 +40,10 @@ private:
 	int textRead;
 
 	bool scriptOverridden; // if the script has been overridden by an in game function
-	std::string stringToRender; // String that is rendered at the end of every frame
+	std::vector<std::string> stringToRender; // String that is rendered at the end of every frame
 	int codeToRender;	// the code of the string to be rendered, so we know who is speaking
 	std::string currentText; // holds a copy of the text on screen for comparison so we dont keep creating a new texture if its the same
+	std::vector<Texture*> textLines;
 
 	SDL_Rect* viewportFull;
 	SDL_Rect* viewportLeft;
@@ -56,7 +55,8 @@ private:
 
     bool overTrashcan = false;
 
-    //Score 
+    // score //
+
     bool endOfMission = false; // Needs to be in private 
     int score = 2;
     std::vector<Texture*> stars;
@@ -114,6 +114,8 @@ private:
 	bool checkTiles(int tileIndex);
 	// when a function is deleted or inserted, re-evaluate the whole string of functions
 	bool checkNewFuncString();
+	// divide up the textual strings that are spoken by the Dr and Prof
+	void divideString(std::vector<std::string>& stringToRender, int stringNum);
 
 	// input control //
 

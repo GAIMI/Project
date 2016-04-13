@@ -4,10 +4,10 @@
 
 // constructor
 UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
-	renderer(rend), text(nullptr), textRead(0), scriptOverridden(false), stringToRender(""),
-	currentText(""), viewportMain(viewportMain), templatePosX(0), templatePosY(0), useBoxPos(false), listPosition(0), 
-	numBoxes(1), gapVisible(true), goButtonPressed(false), functionPickedUp(nullptr), funcStringBoxIndex(-1), 
-	tempBoxCreated(nullptr), tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::BRIEF),
+	renderer(rend), textRead(0), scriptOverridden(false), currentText(""), viewportMain(viewportMain), 
+	templatePosX(0), templatePosY(0), useBoxPos(false), listPosition(0), numBoxes(1), gapVisible(true), 
+	goButtonPressed(false), functionPickedUp(nullptr), funcStringBoxIndex(-1), tempBoxCreated(nullptr), 
+	tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::BRIEF),
 	currentStage(MissionStages::BRIEF), codeToRender(0)
 {
 	// create viewports
@@ -93,11 +93,14 @@ UI::~UI()
 	if (functionTemplate != nullptr)
 		functionTemplate->free();
 
-	if (text != nullptr)
-		text->free();
-
 	if (top != nullptr)
 		top->free();
+
+	// clean up text textures
+	for (auto it = textLines.begin(); it != textLines.end(); ++it)
+	{
+		(*it)->free();
+	}
 
 	// clean up the textures in the left UI panel
 	for (auto it = functions.begin(); it != functions.end(); ++it)
@@ -246,6 +249,13 @@ bool UI::checkTiles(int tileIndex)
 			// check state
 			switch (tile->getType())
 			{
+			case CANYON_CORNER_BOT_LEFT:
+			case CANYON_CORNER_TOP_LEFT:
+			case CANYON_CORNER_TOP_RIGHT:
+			case CANYON_CORNER_BOT_RIGHT:
+			{
+				return false;
+			}
 			case CANYON_CAP_LEFT:
 			case CANYON_CAP_TOP:
 			case CANYON_CAP_RIGHT:
@@ -455,7 +465,7 @@ void UI::processInventory(TileAndDirection* info)
 	}
 	case CANYON_VERT:
 	{
-		info->tile->setType(BRIDGE_VERT);
+		info->tile->setType(BRIDGE_HORIZ);
 		InventoryItem* temp = nullptr;
 		for (InventoryItem* item : inventoryItems)
 		{
@@ -475,7 +485,7 @@ void UI::processInventory(TileAndDirection* info)
 	}
 	case CANYON_HORIZ:
 	{
-		info->tile->setType(BRIDGE_HORIZ);
+		info->tile->setType(BRIDGE_VERT);
 		InventoryItem* temp = nullptr;
 		for (InventoryItem* item : inventoryItems)
 		{
@@ -786,7 +796,7 @@ void UI::downBottomUI(SDL_Point& touchLocation)
 		else
 		{
 			scriptOverridden = true;
-			stringToRender = "No functions selected!";
+			stringToRender[0] = "No functions selected!";
 		}
 	}
 
@@ -896,7 +906,7 @@ void UI::downMainWindowUI(SDL_Point& touchLocation)
 		if (scriptOverridden)
 		{
 			scriptOverridden = false;
-			stringToRender = "";
+			stringToRender[0] = "";
 		}
 		else
 		{
@@ -911,7 +921,7 @@ void UI::downMainWindowUI(SDL_Point& touchLocation)
 				}
 			}
 			else
-				stringToRender = "";
+				stringToRender[0] = "";
 		}
 
 		// clear the function template from the cursor if there is one
@@ -1347,16 +1357,16 @@ bool UI::LoadScript(std::string filePath, std::vector<MissionText*>& missionScri
 //Getter that checks range and also increments the value
 void UI::GetNextLine()
 {
+	stringToRender.clear();
+
 	if (textRead < static_cast<int>(missionScript.size()))
 	{
 		MissionText* text = missionScript.at(textRead);
 		++textRead;
 
-		stringToRender = text->line;
+		stringToRender.push_back(text->line);
 		codeToRender = text->code;
 	}
-	else
-		stringToRender = "";
 }
 
 
@@ -1474,29 +1484,80 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 
 bool UI::renderText()
 {
-	if (text == nullptr)
-		text = new Texture;
-
-	//Render text
-	if (currentText != stringToRender)
+	if (static_cast<int>(stringToRender.size()) > 0)
 	{
-		if (stringToRender != "")
+		if (currentText != stringToRender[0])
 		{
-			if (!text->loadText(stringToRender, textColor, renderer, font))
+			if (stringToRender[0] != "")
 			{
-				return false;
+				// recursive division of the string
+				divideString(stringToRender, 0);
+
+				// go through each line of text and create a texture for each
+				textLines.clear();
+				for (std::string text : stringToRender)
+				{
+					Texture* textTex = new Texture;
+					if (!textTex->loadText(text, textColor, renderer, font))
+						return false;
+
+					textLines.push_back(textTex);
+				}
 			}
+			currentText = stringToRender[0];
 		}
-		currentText = stringToRender;
 	}
 
+	//Render text and background
 	if (currentText != "")
 	{
-		top->renderMedia(0, viewportMain->h - 60, renderer);
-		text->renderMedia(10, viewportMain->h - 50, renderer);
+		top->renderMedia(0, viewportMain->h - 80, renderer);
+
+		int count = 0;
+		for (Texture* text : textLines)
+		{
+			text->renderMedia(10, viewportMain->h - 80 + (count * 45), renderer);
+			++count;
+		}
 	}
 
 	return true;
+}
+
+
+// divide up the textual strings that are spoken by the Dr and Prof (recursive)
+void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
+{
+	int actualStringLength = 0;	// the actual string length after completing the current word
+
+								// if the string is longer than MAX find a nice place to divide up by looking for a space
+	int count = 0;
+	for (char character : stringToRender[stringNum])
+	{
+		if (count > STRING_LENGTH_MAX)
+		{
+			if (character == ' ')
+			{
+				actualStringLength = count;
+				break;
+			}
+		}
+
+		++count;
+	}
+
+	// divide up the string if too long
+	if (actualStringLength > STRING_LENGTH_MAX)
+	{
+		stringToRender.push_back(stringToRender[stringNum].substr(actualStringLength,
+			static_cast<int>(stringToRender[stringNum].size()) - actualStringLength));
+		stringToRender[stringNum] = stringToRender[stringNum].substr(0, actualStringLength);
+
+		// remove the space at the start of the second string
+		stringToRender[stringNum + 1].pop_back();
+
+		divideString(stringToRender, stringNum + 1);
+	}
 }
 
 void UI::renderScoreScreen()
@@ -1520,7 +1581,5 @@ void UI::renderScoreScreen()
 			stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
 			X += 250;
 		}
-
 	}
-
 }

@@ -329,7 +329,7 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 		}
 
 		// only allow control of the UI when preparing a function string, not during its operation
-		if (!controls->getGoButtonPressed()) // == false
+		if (!controls->getGoButtonPressed() && !controls->getEndOfMission())
 		{
 			controls->setCurrentStage(stage);
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
