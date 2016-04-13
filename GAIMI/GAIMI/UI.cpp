@@ -1035,6 +1035,7 @@ void UI::upBottomUI(SDL_Point& touchLocation)
 			touchLocation.y > SCREEN_SIZE.h - TRASHCAN_HEIGHT && touchLocation.y < SCREEN_SIZE.h)
 		{
             
+            overTrashcan = false; // close bin
 
 			// clear the template
 			functionTemplate->free();
@@ -1079,6 +1080,7 @@ void UI::upBottomUI(SDL_Point& touchLocation)
 			else
 			{
                 
+
 				// rollback and clean up //
 
 				functionPickedUp->function->tex->loadFromFile(tempFunc->tex->getFileName(), renderer);
