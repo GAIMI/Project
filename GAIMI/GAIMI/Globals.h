@@ -170,7 +170,7 @@ const int ARROWS_LEFT_Y_POS = FUNCTION_SPACING_BOTTOM;
 const int ARROWS_RIGHT_X_POS = 20 + (NUM_FUNC_STRING_BOXES + 1) * (FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM);
 const int ARROWS_RIGHT_Y_POS = FUNCTION_SPACING_BOTTOM;
 
-const SDL_Rect GO_BUTTON = {
+const SDL_Rect GO_BUTTON{
 	ARROWS_RIGHT_X_POS + FUNCTION_WIDTH + FUNCTION_SPACING_BOTTOM / 2,
 	FUNCTION_SPACING_BOTTOM,
 	100,
@@ -178,17 +178,31 @@ const SDL_Rect GO_BUTTON = {
 
 const int INVENTORY_MAX_SIZE = 4;	// how many items the robot can carry at once
 
+const SDL_Rect EXIT_BUTTON{
+	20,
+	SCREEN_SIZE.h - 80,
+	EXIT_BUTTON_WIDTH,
+	EXIT_BUTTON_HEIGHT };
+
+const SDL_Rect RESET_BUTTON{
+	120,
+	SCREEN_SIZE.h - 70,
+	CLEAR_BUTTON_WIDTH,
+	CLEAR_BUTTON_HEIGHT };
+
 
 ////////// SPEECH TEXT ///////////////
 
 const int STRING_LENGTH_MAX = 50;	// the max string length before attempting to divide up
-const SDL_Point SPEECH_BOX{ 0, UI_MAIN_HEIGHT - 300 };
+const SDL_Point SPEECH_BOX { 0, UI_MAIN_HEIGHT - 300 };
 
-const SDL_Rect OK_BUTTON = {
+const SDL_Rect OK_BUTTON{
 	SPEECH_BOX.x + 700,
 	SPEECH_BOX.y + 147,
 	100,
 	100 };
+
+const SDL_Point SPEECH{ SPEECH_BOX.x + 62, SPEECH_BOX.y + 20 };
 
 
 ////////// FUNCTION CONTROL ///////////

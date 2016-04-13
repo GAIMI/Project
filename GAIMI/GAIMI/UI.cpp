@@ -807,21 +807,21 @@ void UI::downLeftUI(SDL_Point& touchLocation)
             functionTemplate->loadFromFile(functionFilenames.at(position), renderer);
         }
 
-        //Exit and clear reset
-        if (touchLocation.x > 20 &&
-            touchLocation.x < 20 + EXIT_BUTTON_WIDTH &&
-            touchLocation.y > SCREEN_SIZE.h - 80 &&
-            touchLocation.y < SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
+        // Exit and clear reset
+        if (touchLocation.x > EXIT_BUTTON.x &&
+            touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
+            touchLocation.y > EXIT_BUTTON.y &&
+            touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
         {
-            //Exit    
+            // Exit    
             quitGame = true;
         }
 
-        // Reset
-        if (touchLocation.x > 120 &&
-            touchLocation.x < 120 + CLEAR_BUTTON_WIDTH &&
-            touchLocation.y > SCREEN_SIZE.h - 70 &&
-            touchLocation.y < SCREEN_SIZE.h - 70 + CLEAR_BUTTON_HEIGHT)
+        // Reset button
+        if (touchLocation.x > RESET_BUTTON.x &&
+            touchLocation.x < RESET_BUTTON.x + RESET_BUTTON.w &&
+            touchLocation.y > RESET_BUTTON.y &&
+            touchLocation.y < RESET_BUTTON.y + RESET_BUTTON.h)
         {
 
 
@@ -993,13 +993,13 @@ void UI::okButton(SDL_Point& touchLocation)
         }
     }
 
-		//Exit and clear reset
-	else if (touchLocation.x > 20 &&
-			touchLocation.x < 20 + EXIT_BUTTON_WIDTH &&
-			touchLocation.y > SCREEN_SIZE.h - 80 &&
-			touchLocation.y < SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
+	// Exit and clear reset
+	else if (touchLocation.x > EXIT_BUTTON.x &&
+		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
+		touchLocation.y > EXIT_BUTTON.y &&
+		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
 	{
-		//Exit    
+		// Exit    
 		quitGame = true;
 	}
 }
@@ -1585,7 +1585,7 @@ bool UI::renderText()
         int count = 0;
         for (Texture* text : textLines)
         {
-            text->renderMedia(SPEECH_BOX.x + 62, SPEECH_BOX.y + 20 + (count * 45), renderer);
+            text->renderMedia(SPEECH.x, SPEECH.y + (count * 45), renderer);
             ++count;
         }
 
