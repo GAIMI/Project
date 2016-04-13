@@ -1,47 +1,47 @@
 001 Welcome young scientist, to the Geophysical Analysis Interplanetary Machine Interface, or GAIMI for short! 
 001 My name is Dr Ogel, and this is my assistant, Professor Blue.
-002 Nice to meet you.
+001 Nice to meet you.
 001 I am your team leader for the GAIMI mission to mars! I’ll be telling you what to expect when GAIMI lands.
 001 Professor Blue will be describing to you what the readings on GAIMI are and eventually what it finds on the red planet. 
 001 It is Your job is to tell our little rover where to go.
 001 If this mission goes well, we might even get the all clear to extend our research to other planets with GAIMI!
 001 With each mission you must analyse the planet to find if it is habitable to humans and whether we can extend our reach beyond earth.
 001 Are you ready? Then let's begin!
-
+001 
 101 Using the controls to the left of the screen: drag and drop movements and functions to the bar at the bottom.
 101 For your first mission travel to the selected location and dig for a dirt sample to analyse.
 101 Once you have dug in the required spots your mission is complete .
 101 Though be warned spending too much time on the planet's surface heightens the risk of being caught in a sandstorm!
 101 I've got to get back to the lab, I'll leave you in the capable hands of my assistant!
-
+101 
 112 According to GAIMI’s analysis, Mars’ atmosphere is awful! On Earth, our atmosphere is 78% nitrogen, 21% oxygen and 0.03% carbon dioxide.
 112 The readings here show Mars’ atmosphere has 95.97% carbon dioxide, which is actually poisonous to humans! Not good initial readings, Doctor!
-
+112 
 122 Doctor, look at this! GAIMI is picking up high levels of ionising radiation. Here on earth, only a small amount gets through, because of how strong our magnetic field is.  
 122 This must mean that Mars has a very weak magnetic field, if at all. That much radiation would cause all sorts of issues to the human body if unprotected!
 121 Good work ! I think that’s enough for today, a sandstorm is due soon so bring GAIMI back to base.
-
+121 
 201 Right its time to get GAIMI back out into the  field for some more analysis.
 201 After a meteor shower yesterday one of the bridges over a chasm has been knocked loose and fallen into the chasm.
 201 Unfortunately the selected dig site is past this chasm. Fortunately, some materials were left out by other researchers. 
 201 By collecting these materials GAIMI can easily construct and place a bridge.
-
+201 
 212 Great! With the supplies in this crate building a bridge will be no problem at all!
-
+212 
 222 Interesting, that sample contained Nitrate! This is often used as fertiliser on earth, which aids plant growth. 
 222 If we could get plants on Mars, it might help to stabilise the atmosphere! 
-
+222 
 301 An unexpected level 4 Sandstorm swept the  research site  a few hours ago.
 301 It has damaged  a large amount of the equipment in the area and a number of researchers were in the vicinity when it happened
 301 Should you find any stranded and in need of help GAIMI is able to sustain the weight of several passengers.
 301 Once this dig is done it should be all we need to figure out if mars is habitable for a full human colony.
-
+301 
 312 These pressure readings are off. Pressure is measures in Millibars, and here on earth the pressure is 1013.25 Millibars. 
 312 On Mars, according to GAIMI, the pressure is only up to 14 Millibars.
 312 That must explain why the oxygen levels are so low, because low pressure means less oxygen in a given amount of air.
-
+312 
 322 Oh my goodness, you’ve just found liquid water! 
 322 This is the most basic element that researchers look for on potentially habitable planets!!
 321 That is good news Professor, but Mars’ issues are bigger than we imagined.
 321 But GAIMI is up and working, which is great! It’s time to leave the solar system!
-
+321 
