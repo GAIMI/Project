@@ -93,8 +93,8 @@ UI::~UI()
 	if (functionTemplate != nullptr)
 		functionTemplate->free();
 
-	if (top != nullptr)
-		top->free();
+	if (speechBubble != nullptr)
+		speechBubble->free();
 
 	// clean up text textures
 	for (auto it = textLines.begin(); it != textLines.end(); ++it)
@@ -566,7 +566,7 @@ bool UI::loadMedia()
 	OkButton = new Texture;
 	listBackButton = new Texture;
 	listForwardButton = new Texture;
-	top = new Texture;
+	speechBubble = new Texture;
 	trashcan = new Texture;
     openTrashcan = new Texture;
 	scoreBackground = new Texture;
@@ -590,7 +590,7 @@ bool UI::loadMedia()
 	if (!listForwardButton->loadFromFile(LIST_MOVE, renderer))
 		return false;
 
-	if (!top->loadFromFile(TOP_UI, renderer))
+	if (!speechBubble->loadFromFile(SPEECH_BUBBLE, renderer))
 		return false;
 
 	if (!trashcan->loadFromFile(TRASHCAN, renderer))
@@ -675,6 +675,30 @@ void UI::mouseInputHandler(SDL_Event& event, float& frameTime, SDL_Point& touchL
 		touchLocation.y = event.button.y;
 
 		motion(touchLocation, camera);
+	}
+}
+void UI::okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
+	SDL_Rect& camera, const SDL_Rect& screenSize)
+{
+	////////////////
+	// touch down //
+	////////////////
+	if (event.type == SDL_FINGERDOWN)
+	{
+		touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
+		touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
+
+		okButton(touchLocation);
+	}
+	//////////////////////////
+	// mouse button clicked //
+	//////////////////////////
+	else if (event.type == SDL_MOUSEBUTTONDOWN)
+	{
+		touchLocation.x = event.button.x;
+		touchLocation.y = event.button.y;
+
+		okButton(touchLocation);
 	}
 }
 
@@ -898,43 +922,46 @@ void UI::downBottomUI(SDL_Point& touchLocation)
 }
 void UI::downMainWindowUI(SDL_Point& touchLocation)
 {
-	// ok button pressed
-	if (touchLocation.x > viewportLeft->w && touchLocation.x < GO_BUTTON.w + viewportLeft->w &&
-		touchLocation.y > 100 && touchLocation.y < 200)
+	mapDrag = true;
+	mapLocation.x = touchLocation.x;
+	mapLocation.y = touchLocation.y;
+}
+void UI::okButton(SDL_Point& touchLocation)
+{
+	// if mouse is over the map //
+	if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
 	{
-		// TEST: of script increment
-		if (scriptOverridden)
+		// ok button pressed
+		if (touchLocation.x > viewportLeft->w + OK_BUTTON.x && touchLocation.x < viewportLeft->w + OK_BUTTON.x + OK_BUTTON.w &&
+			touchLocation.y > OK_BUTTON.y && touchLocation.y < OK_BUTTON.y + OK_BUTTON.h)
 		{
-			scriptOverridden = false;
-			stringToRender[0] = "";
-		}
-		else
-		{
-			if (textRead < static_cast<int>(missionScript.size()))
+			// TEST: of script increment
+			if (scriptOverridden)
 			{
-				// check to see if the next string is the same code as the previous (same dialog)  
-				// or we've moved on to the next mission stage (unlocking more dialog)
-				if (missionScript[textRead]->code == missionScript[textRead - 1]->code || previousStage != currentStage)
-				{
-					previousStage = currentStage;
-					getNextLine(); // Gets next line and increments textRead value
-				}
+				scriptOverridden = false;
+				stringToRender[0] = "";
 			}
 			else
-				stringToRender[0] = "";
+			{
+				if (textRead < static_cast<int>(missionScript.size()))
+				{
+					// check to see if the next string is the same code as the previous (same dialog)  
+					// or we've moved on to the next mission stage (unlocking more dialog)
+					if (missionScript[textRead]->code == missionScript[textRead - 1]->code || previousStage != currentStage)
+					{
+						previousStage = currentStage;
+						getNextLine(); // Gets next line and increments textRead value
+					}
+				}
+				else
+					stringToRender[0] = "";
+			}
+
+			// clear the function template from the cursor if there is one
+			if (functionTemplate != nullptr)
+				functionTemplate->free();
 		}
-
-		// clear the function template from the cursor if there is one
-		if (functionTemplate != nullptr)
-			functionTemplate->free();
-	}
-
-	// if anywhere else on the map
-	else
-	{
-		mapDrag = true;
-		mapLocation.x = touchLocation.x;
-		mapLocation.y = touchLocation.y;
 	}
 }
 
@@ -1430,8 +1457,6 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 		tile->tex->renderMedia(tile->location.x - camera.x, tile->location.y - camera.y, renderer);
 	}
 
-	OkButton->renderMedia(0, 100, renderer);
-
 	// render to full screen //
 
 	// set viewport
@@ -1482,6 +1507,7 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 	}
 }
 
+// render the speech bubbles
 bool UI::renderText()
 {
 	if (static_cast<int>(stringToRender.size()) > 0)
@@ -1508,17 +1534,21 @@ bool UI::renderText()
 		}
 	}
 
+	okActive = false;
 	//Render text and background
 	if (currentText != "")
 	{
-		top->renderMedia(0, viewportMain->h - 80, renderer);
+		speechBubble->renderMedia(SPEECH_BOX.x, SPEECH_BOX.y, renderer);
 
 		int count = 0;
 		for (Texture* text : textLines)
 		{
-			text->renderMedia(10, viewportMain->h - 80 + (count * 45), renderer);
+			text->renderMedia(SPEECH_BOX.x + 62, SPEECH_BOX.y + 20 + (count * 45), renderer);
 			++count;
 		}
+
+		OkButton->renderMedia(OK_BUTTON.x, OK_BUTTON.y, renderer);
+		okActive = true;
 	}
 
 	return true;
