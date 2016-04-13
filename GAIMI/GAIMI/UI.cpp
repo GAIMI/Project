@@ -992,6 +992,16 @@ void UI::okButton(SDL_Point& touchLocation)
                 functionTemplate->free();
         }
     }
+
+		//Exit and clear reset
+	else if (touchLocation.x > 20 &&
+			touchLocation.x < 20 + EXIT_BUTTON_WIDTH &&
+			touchLocation.y > SCREEN_SIZE.h - 80 &&
+			touchLocation.y < SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
+	{
+		//Exit    
+		quitGame = true;
+	}
 }
 
 void UI::upBottomUI(SDL_Point& touchLocation)
