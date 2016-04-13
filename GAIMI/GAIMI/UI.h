@@ -45,7 +45,7 @@ private:
     int templatePosX;	// used when the template is over an empty function string box
     int templatePosY;	// used when the template is over an empty function string box
 
-                        // story teller //
+    // story teller //
 
     MissionStages previousStage;
     MissionStages currentStage;
@@ -61,7 +61,7 @@ private:
     std::vector<Texture*> textLines;	// holds the textures of each line of text after dividing up the current text string
     bool okActive = false;	// allows the ok button to be pressed
 
-                            // score //
+   // score //
 
     bool endOfMission = false; // Needs to be in private 
     int score = 2;
@@ -103,13 +103,13 @@ private:
     bool mapDrag = false;	// true when touching/click and hold on the map
     SDL_Point mapLocation;	// the point where the player will drag the map from
 
-                            // selection //
+	// selection //
 
     std::pair<Texture*, SDL_Point*> functionSelect;	// the highlighting texture for functions int the left UI panel
 
-                                                    // private methods //
+    // private methods //
 
-                                                    // create a new empty box to hold a function after a placing a function
+    // create a new empty box to hold a function after a placing a function
     void createFuncStringBox();
     // insert a new empty box to hold a function when hovering over a box bar
     void insertFuncStringBox(int index);
@@ -153,7 +153,7 @@ public:
 
     std::list<Function*>& getFunctionsList() { return functions; }
 
-    bool getExit() { return quitGame; }
+    bool getExit() const { return quitGame; }
     bool getGoButtonPressed() const { return goButtonPressed; }
     Tile*& getCurrentTile() { return currentTile; }
     bool getEndOfMission() const { return endOfMission; }

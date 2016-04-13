@@ -15,7 +15,7 @@ UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
     viewportLeft = new SDL_Rect(UI_LEFT);									// left UI panel
     viewportBottom = new SDL_Rect(UI_BOTTOM);								// bottom UI panel
 
-                                                                            // load up the textures
+	// load up the textures
     if (!loadMedia())
         throw;
 
@@ -602,14 +602,14 @@ bool UI::loadMedia()
     if (!openTrashcan->loadFromFile(OPEN_TRASHCAN, renderer))
         return false;
 
-    if (!exitButton->loadFromFile(EXITBUTTON_FILE, renderer))
+    if (!exitButton->loadFromFile(EXIT_BUTTON_FILE, renderer))
         return false;
 
-    if (!clearButton->loadFromFile(CLEARBUTTON_FILE, renderer))
+    if (!clearButton->loadFromFile(CLEAR_BUTTON_FILE, renderer))
         return false;
 
 
-    if (!scoreBackground->loadFromFile(SCOREBACKGROUND_FILE, renderer))
+    if (!scoreBackground->loadFromFile(SCORE_BACKGROUND_FILE, renderer))
         return false;
 
     return true;
@@ -808,20 +808,20 @@ void UI::downLeftUI(SDL_Point& touchLocation)
         }
 
         //Exit and clear reset
-        if (touchLocation.x > viewportLeft->x + 20 &&
-            touchLocation.x < viewportLeft->x + 20 + EXITBUTTONWIDTH &&
-            touchLocation.y > viewportLeft->y + SCREEN_SIZE.h - 80 &&
-            touchLocation.y < viewportLeft->y + SCREEN_SIZE.h - 80 + EXITBUTTONHEIGHT)
+        if (touchLocation.x > 20 &&
+            touchLocation.x < 20 + EXIT_BUTTON_WIDTH &&
+            touchLocation.y > SCREEN_SIZE.h - 80 &&
+            touchLocation.y < SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
         {
             //Exit    
             quitGame = true;
         }
 
         // Reset
-        if (touchLocation.x > viewportLeft->x + 120 &&
-            touchLocation.x < viewportLeft->x + 120 + CLEARBUTTONWIDTH &&
-            touchLocation.y > viewportLeft->y + SCREEN_SIZE.h - 70 &&
-            touchLocation.y < viewportLeft->y + SCREEN_SIZE.h - 70 + CLEARBUTTONHEIGHT)
+        if (touchLocation.x > 120 &&
+            touchLocation.x < 120 + CLEAR_BUTTON_WIDTH &&
+            touchLocation.y > SCREEN_SIZE.h - 70 &&
+            touchLocation.y < SCREEN_SIZE.h - 70 + CLEAR_BUTTON_HEIGHT)
         {
 
 
@@ -1630,7 +1630,7 @@ void UI::renderScoreScreen()
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
 
         int X = (SCREEN_SIZE.w / 2) - 350;
-        for (int i = 0; i < NUMOFSTARS; i++)
+        for (int i = 0; i < NUM_OF_STARS; i++)
         {
             blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
             X += 250;

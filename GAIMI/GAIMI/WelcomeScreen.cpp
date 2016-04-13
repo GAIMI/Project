@@ -64,7 +64,7 @@ bool WelcomeScreen::loadMedia()
 	if (!selectedMap->loadFromFile(SELECTED_FILE, renderer))
 		return false;
 
-    if (!exitButton->loadFromFile(EXITBUTTON_FILE, renderer))
+    if (!exitButton->loadFromFile(EXIT_BUTTON_FILE, renderer))
         return false;
 
 	return true;
@@ -153,9 +153,9 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 
             //Exit and clear reset
             if (touchLocation.x > viewportFull->x + 20 &&
-                touchLocation.x < viewportFull->x + 20 + EXITBUTTONWIDTH &&
+                touchLocation.x < viewportFull->x + 20 + EXIT_BUTTON_WIDTH &&
                 touchLocation.y > viewportFull->y + SCREEN_SIZE.h - 80 &&
-                touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXITBUTTONHEIGHT)
+                touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
             {
                 //Exit    
                 quit = true;

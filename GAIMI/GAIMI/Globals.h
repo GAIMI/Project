@@ -67,18 +67,18 @@ const std::string TTF_FILE = "Media\\font.ttf";
 const std::string DEFAULT_SCRIPT_FILE = "Media\\testscript.txt";
 const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
 
-const std::string EXITBUTTON_FILE = "Media\\ExitButton.png";
-const int EXITBUTTONWIDTH = 80;
-const int EXITBUTTONHEIGHT = 72;
-const std::string CLEARBUTTON_FILE = "Media\\ResetButton.png";
-const int CLEARBUTTONWIDTH = 120;
-const int CLEARBUTTONHEIGHT = 53;
+const std::string EXIT_BUTTON_FILE = "Media\\ExitButton.png";
+const int EXIT_BUTTON_WIDTH = 80;
+const int EXIT_BUTTON_HEIGHT = 72;
+const std::string CLEAR_BUTTON_FILE = "Media\\ResetButton.png";
+const int CLEAR_BUTTON_WIDTH = 120;
+const int CLEAR_BUTTON_HEIGHT = 53;
 
 // Score Screen
-const std::string SCOREBACKGROUND_FILE = "Media\\ScoreBackground.png";
-const std::string BLANKSTAR_FILE = "Media\\blankStar.png";
-const std::string FULLSTAR_FILE = "Media\\fullStar.png";
-const int NUMOFSTARS = 3;
+const std::string SCORE_BACKGROUND_FILE = "Media\\ScoreBackground.png";
+const std::string BLANK_STAR_FILE = "Media\\blankStar.png";
+const std::string FULL_STAR_FILE = "Media\\fullStar.png";
+const int NUM_OF_STARS = 3;
 
 
 ////////////// ROBOT ///////////////
