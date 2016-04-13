@@ -33,6 +33,7 @@ bool WelcomeScreen::loadMedia()
 	startButton = new Texture;
 	title = new Texture;
 	selectedMap = new Texture;
+    exitButton = new Texture;
 
 	int startX = (SCREEN_SIZE.w / 2) - 200;
 	int startY = (SCREEN_SIZE.h / 3) * 2;
@@ -63,6 +64,9 @@ bool WelcomeScreen::loadMedia()
 	if (!selectedMap->loadFromFile(SELECTED_FILE, renderer))
 		return false;
 
+    if (!exitButton->loadFromFile(EXITBUTTON_FILE, renderer))
+        return false;
+
 	return true;
 }
 
@@ -77,6 +81,7 @@ std::string WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit)
 	background->renderMedia(0, 0, renderer);
 	startButton->renderMedia(SCREEN_SIZE.w / 2 - (START_WIDTH / 2), SCREEN_SIZE.h / 2 - (START_HEIGHT / 2), renderer);
 	title->renderMedia(SCREEN_SIZE.w / 2 - (TITLE_WIDTH / 2), 100, renderer);
+    exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
 
 	if (selectedX != 0 || selectedY != 0)
 	{
@@ -145,6 +150,17 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 					}
 				}
 			}
+
+            //Exit and clear reset
+            if (touchLocation.x > viewportFull->x + 20 &&
+                touchLocation.x < viewportFull->x + 20 + EXITBUTTONWIDTH &&
+                touchLocation.y > viewportFull->y + SCREEN_SIZE.h - 80 &&
+                touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXITBUTTONHEIGHT)
+            {
+                //Exit    
+                quit = true;
+            }
+
 		} // end mousebuttondown
 	} // end while pol event
 }

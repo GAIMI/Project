@@ -27,12 +27,25 @@ private:
 	Texture* trashcan;	// for function deletion
     Texture* openTrashcan;
 	Texture* functionTemplate;
-	Texture* speechBubble;	//backdrop for text on the map viewport
+	Texture* top;	//backdrop for text on the map viewport
     Texture* scoreBackground;
+    Texture* exitButton;
+    Texture* clearButton;
     
 	TTF_Font* font;
 
 	SDL_Color textColor;
+
+	MissionStages previousStage;
+	MissionStages currentStage;
+	std::vector<MissionText*> missionScript;
+	int textRead;
+
+	bool scriptOverridden; // if the script has been overridden by an in game function
+	std::vector<std::string> stringToRender; // String that is rendered at the end of every frame
+	int codeToRender;	// the code of the string to be rendered, so we know who is speaking
+	std::string currentText; // holds a copy of the text on screen for comparison so we dont keep creating a new texture if its the same
+	std::vector<Texture*> textLines;
 
 	SDL_Rect* viewportFull;
 	SDL_Rect* viewportLeft;
@@ -42,21 +55,8 @@ private:
 	int templatePosX;	// used when the template is over an empty function string box
 	int templatePosY;	// used when the template is over an empty function string box
 
-	// story teller //
-
-	MissionStages previousStage;
-	MissionStages currentStage;
-	std::vector<MissionText*> missionScript;
-	int textRead;
-
-	// speech text //
-
-	bool scriptOverridden; // if the script has been overridden by an in game function
-	std::vector<std::string> stringToRender; // String that is rendered at the end of every frame
-	int codeToRender;	// the code of the string to be rendered, so we know who is speaking
-	std::string currentText; // holds a copy of the text on screen for comparison so we dont keep creating a new texture if its the same
-	std::vector<Texture*> textLines;	// holds the textures of each line of text after dividing up the current text string
-	bool okActive = false;	// allows the ok button to be pressed
+    bool overTrashcan = false;
+    bool quitGame = false;
 
     // score //
 
@@ -88,7 +88,6 @@ private:
 	std::vector<BoxBar*> boxBars;	// bars between placed functions in the bottom UI
 	FunctionStringBox* tempBoxCreated;	// contains the temp box when hovering over a boxbar with a function
 	int tempIndex;	// the position of an insertion
-	bool overTrashcan = false;
 
 	// map //
 
@@ -137,8 +136,6 @@ private:
 	void motionBottomUI(SDL_Point& touchLocation);
 	void motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera);
 
-	void okButton(SDL_Point& touchLocation);
-
 public:
 	// constructor
 	UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet);
@@ -150,10 +147,10 @@ public:
 
 	std::list<Function*>& getFunctionsList() { return functions; }
 
-	bool getGoButtonPressed() const { return goButtonPressed; }
+    bool getExit() { return quitGame; }
+	bool getGoButtonPressed() { return goButtonPressed; }
 	Tile*& getCurrentTile() { return currentTile; }
-    bool getEndOfMission() const { return endOfMission; }
-	bool getOkActive() const { return okActive; }
+    bool getEndOfMission() { return endOfMission; }
 
 
 	// setters //
@@ -174,7 +171,7 @@ public:
 	// what ever media we need is loaded in here
 	bool loadMedia();
 
-	// render the speech bubbles
+	//Prints text to the screen
 	bool renderText();
 	bool LoadScript(std::string filePath, std::vector<MissionText*>& missionScript);
 	void getNextLine();
@@ -185,10 +182,6 @@ public:
 
 	// handling mouse input
 	void mouseInputHandler(SDL_Event& e, float& frameTime, SDL_Point& touchLocation, SDL_Rect& camera);
-
-	// handle inputs for when speech is on the screen (can only press ok)
-	void okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
-		SDL_Rect& camera, const SDL_Rect& screenSize);
 
 	// render the UI to the screen
 	void render(SDL_Point& touchLocation, SDL_Rect &camera);

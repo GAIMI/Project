@@ -309,6 +309,8 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	controls->renderText();
 	controls->renderScoreScreen();
 
+    quit = controls->getExit(); // sets the exit
+
 	// render mini map
 	miniMap();
 

@@ -67,6 +67,13 @@ const std::string TTF_FILE = "Media\\font.ttf";
 const std::string DEFAULT_SCRIPT_FILE = "Media\\testscript.txt";
 const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
 
+const std::string EXITBUTTON_FILE = "Media\\ExitButton.png";
+const int EXITBUTTONWIDTH = 80;
+const int EXITBUTTONHEIGHT = 72;
+const std::string CLEARBUTTON_FILE = "Media\\ResetButton.png";
+const int CLEARBUTTONWIDTH = 120;
+const int CLEARBUTTONHEIGHT = 53;
+
 // Score Screen
 const std::string SCOREBACKGROUND_FILE = "Media\\ScoreBackground.png";
 const std::string BLANKSTAR_FILE = "Media\\blankStar.png";

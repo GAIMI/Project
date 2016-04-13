@@ -19,6 +19,7 @@ private:
 	Texture* startButton;
 	Texture* title;
 	Texture* selectedMap;
+    Texture* exitButton;
 
 	std::vector<MapTexture*> maps;
 
