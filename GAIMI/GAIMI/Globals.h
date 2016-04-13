@@ -10,7 +10,7 @@ class Tile;
 ////////////// SCREEN //////////////
 
 // 1920 x 1080 - activtable resolution - 16:9
-const SDL_Rect SCREEN_SIZE = { 0, 0, 1920, 1000 };
+const SDL_Rect SCREEN_SIZE = { 0, 0, 1920, 1080 };
 //const SDL_Rect SCREEN_SIZE = { 0, 0, 1600, 900 };
 
 
