@@ -25,6 +25,7 @@ private:
 	Texture* listBackButton;	// arrows on the end of the function string boxes
 	Texture* listForwardButton;
 	Texture* trashcan;	// for function deletion
+    Texture* openTrashcan;
 	Texture* functionTemplate;
 	Texture* top;	//backdrop for text on the map viewport
 	Texture* text;
@@ -52,6 +53,8 @@ private:
 
 	int templatePosX;	// used when the template is over an empty function string box
 	int templatePosY;	// used when the template is over an empty function string box
+
+    bool overTrashcan = false;
 
     //Score 
     bool endOfMission = false; // Needs to be in private 

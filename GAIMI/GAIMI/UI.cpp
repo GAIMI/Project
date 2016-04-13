@@ -86,6 +86,7 @@ UI::~UI()
 	goButton->free();
 	OkButton->free();
 	trashcan->free();
+    openTrashcan->free();
 
 	resetRouteMap();
 
@@ -113,7 +114,7 @@ UI::~UI()
 			(*it)->function->tex->free();
 	}
 
-	//Aaron clean up stars
+	//clean up stars
 	for (auto it = blankStars.begin(); it != blankStars.end(); ++it)
 	{
 		(*it)->free();
@@ -557,6 +558,7 @@ bool UI::loadMedia()
 	listForwardButton = new Texture;
 	top = new Texture;
 	trashcan = new Texture;
+    openTrashcan = new Texture;
 	scoreBackground = new Texture;
 
 
@@ -583,6 +585,10 @@ bool UI::loadMedia()
 
 	if (!trashcan->loadFromFile(TRASHCAN, renderer))
 		return false;
+
+    if (!openTrashcan->loadFromFile(OPEN_TRASHCAN, renderer))
+        return false;
+
 
 	if (!scoreBackground->loadFromFile(SCOREBACKGROUND_FILE, renderer))
 		return false;
@@ -1028,6 +1034,8 @@ void UI::upBottomUI(SDL_Point& touchLocation)
 		if (touchLocation.x > SCREEN_SIZE.w - TRASHCAN_WIDTH && touchLocation.x < SCREEN_SIZE.w &&
 			touchLocation.y > SCREEN_SIZE.h - TRASHCAN_HEIGHT && touchLocation.y < SCREEN_SIZE.h)
 		{
+            
+
 			// clear the template
 			functionTemplate->free();
 
@@ -1070,6 +1078,7 @@ void UI::upBottomUI(SDL_Point& touchLocation)
 			}
 			else
 			{
+                
 				// rollback and clean up //
 
 				functionPickedUp->function->tex->loadFromFile(tempFunc->tex->getFileName(), renderer);
@@ -1245,6 +1254,24 @@ void UI::motionBottomUI(SDL_Point& touchLocation)
 
 		++index;
 	}
+
+    // Mouse over trash can
+    if (functionPickedUp != nullptr)
+    {
+        // if over the trashcan viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT
+        if (touchLocation.x > SCREEN_SIZE.w - TRASHCAN_WIDTH && touchLocation.x < SCREEN_SIZE.w &&
+            touchLocation.y > SCREEN_SIZE.h - TRASHCAN_HEIGHT && touchLocation.y < SCREEN_SIZE.h)
+        {
+            overTrashcan = true; // over trash can  
+        }
+        else
+        {
+
+            overTrashcan = false; // Not over trash can
+        }
+    }
+
+
 }
 void UI::motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera)
 {
@@ -1368,7 +1395,16 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 	bottomPanel->renderMedia(0, 0, renderer);
 	listBackButton->renderMedia(ARROWS_LEFT_X_POS, ARROWS_LEFT_Y_POS, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
 	listForwardButton->renderMedia(ARROWS_RIGHT_X_POS, ARROWS_RIGHT_Y_POS, renderer);
-	trashcan->renderMedia(viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT, renderer);
+
+    if (overTrashcan)
+    {
+        openTrashcan->renderMedia(viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT, renderer);
+    }
+    else
+    {
+        trashcan->renderMedia(viewportBottom->w - TRASHCAN_WIDTH, viewportBottom->h - TRASHCAN_HEIGHT, renderer);
+    }
+	
 	goButton->renderMedia(GO_BUTTON.x, GO_BUTTON.y, renderer);
 
 	// render to the main view port (map) //

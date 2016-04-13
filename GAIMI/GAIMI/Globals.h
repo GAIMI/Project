@@ -58,7 +58,8 @@ const std::string PROF_B = "Media\\ProfB.png";
 const std::string LIST_MOVE = "Media\\ListMove.jpg";
 const std::string EMPTY_BOX = "Media\\EmptyBox.png";
 const std::string BOX_BAR = "Media\\BoxBar.png";
-const std::string TRASHCAN = "Media\\TrashcanOpen.png";
+const std::string TRASHCAN = "Media\\TrashcanClosed.png";
+const std::string OPEN_TRASHCAN = "Media\\TrashcanOpen.png";
 const std::string TILE_OVERLAY_RED = "Media\\redOverlay.png";
 const std::string TILE_OVERLAY_BLUE = "Media\\blueOverlay.png";
 
