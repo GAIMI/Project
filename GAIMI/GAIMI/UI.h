@@ -31,6 +31,8 @@ private:
     Texture* scoreBackground;
     Texture* exitButton;
     Texture* clearButton;
+	Texture* drOgel;
+
     bool quitGame = false;
 
     TTF_Font* font;

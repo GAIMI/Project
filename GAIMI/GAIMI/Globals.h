@@ -53,6 +53,7 @@ const std::string BRIDGE_ICON = "Media\\Bridge.png";
 const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
 
 const std::string DR_O = "Media\\DrO.png";
+const SDL_Point DR_O_POS{ 1000, 200 };
 const std::string PROF_B = "Media\\ProfB.png";
 
 const std::string LIST_MOVE = "Media\\ListMove.jpg";
@@ -193,7 +194,7 @@ const SDL_Rect RESET_BUTTON{
 
 ////////// SPEECH TEXT ///////////////
 
-const int STRING_LENGTH_MAX = 50;	// the max string length before attempting to divide up
+const int STRING_LENGTH_MAX = 45;	// the max string length before attempting to divide up
 const SDL_Point SPEECH_BOX { 0, UI_MAIN_HEIGHT - 300 };
 
 const SDL_Rect OK_BUTTON{
@@ -202,7 +203,7 @@ const SDL_Rect OK_BUTTON{
 	100,
 	100 };
 
-const SDL_Point SPEECH{ SPEECH_BOX.x + 62, SPEECH_BOX.y + 20 };
+const SDL_Point SPEECH{ SPEECH_BOX.x + 70, SPEECH_BOX.y + 20 };
 
 
 ////////// FUNCTION CONTROL ///////////

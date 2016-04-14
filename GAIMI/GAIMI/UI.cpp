@@ -97,6 +97,9 @@ UI::~UI()
     if (speechBubble != nullptr)
         speechBubble->free();
 
+	if (drOgel != nullptr)
+		drOgel->free();
+
     // clean up text textures
     for (auto it = textLines.begin(); it != textLines.end(); ++it)
     {
@@ -573,6 +576,7 @@ bool UI::loadMedia()
     scoreBackground = new Texture;
     exitButton = new Texture;
     clearButton = new Texture;
+	drOgel = new Texture;
 
 
     if (!leftPanel->loadFromFile(LEFT_UI, renderer))
@@ -608,9 +612,11 @@ bool UI::loadMedia()
     if (!clearButton->loadFromFile(CLEAR_BUTTON_FILE, renderer))
         return false;
 
-
     if (!scoreBackground->loadFromFile(SCORE_BACKGROUND_FILE, renderer))
         return false;
+
+	if (!drOgel->loadFromFile(DR_O, renderer))
+		return false;
 
     return true;
 }
@@ -977,7 +983,10 @@ void UI::okButton(SDL_Point& touchLocation)
                 {
                     // check to see if the next string is the same code as the previous (same dialog)  
                     // or we've moved on to the next mission stage (unlocking more dialog)
-                    if (missionScript[textRead]->code == missionScript[textRead - 1]->code || previousStage != currentStage)
+                    if (missionScript[textRead]->code == missionScript[textRead - 1]->code ||
+						missionScript[textRead]->code == missionScript[textRead - 1]->code + 1 ||
+						missionScript[textRead]->code == missionScript[textRead - 1]->code - 1 ||
+						previousStage != currentStage)
                     {
                         previousStage = currentStage;
                         getNextLine(); // Gets next line and increments textRead value
@@ -1580,14 +1589,31 @@ bool UI::renderText()
     //Render text and background
     if (currentText != "")
     {
+		// render Dr Ogel and speech bubble
+		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
+		speechBubble->renderMedia(DR_O_POS.x - 750, DR_O_POS.y + 50, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
+
+		// render Prof Blue's speech bubble
         speechBubble->renderMedia(SPEECH_BOX.x, SPEECH_BOX.y, renderer);
 
-        int count = 0;
-        for (Texture* text : textLines)
-        {
-            text->renderMedia(SPEECH.x, SPEECH.y + (count * 45), renderer);
-            ++count;
-        }
+		if (codeToRender % 10 == 1)
+		{
+			int count = 0;
+			for (Texture* text : textLines)
+			{
+				text->renderMedia(DR_O_POS.x - 730, DR_O_POS.y + 70 + (count * 45), renderer);
+				++count;
+			}
+		}
+		else
+		{
+			int count = 0;
+			for (Texture* text : textLines)
+			{
+				text->renderMedia(SPEECH.x, SPEECH.y + (count * 45), renderer);
+				++count;
+			}
+		}
 
         OkButton->renderMedia(OK_BUTTON.x, OK_BUTTON.y, renderer);
         okActive = true;

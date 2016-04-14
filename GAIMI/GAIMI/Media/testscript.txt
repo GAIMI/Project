@@ -1,6 +1,6 @@
 001 Welcome young scientist, to the Geophysical Analysis Interplanetary Machine Interface, or GAIMI for short! 
 001 My name is Dr Ogel, and this is my assistant, Professor Blue.
-001 Nice to meet you.
+002 Nice to meet you.
 001 I am your team leader for the GAIMI mission to mars! I’ll be telling you what to expect when GAIMI lands.
 001 Professor Blue will be describing to you what the readings on GAIMI are and eventually what it finds on the red planet. 
 001 It is Your job is to tell our little rover where to go.
