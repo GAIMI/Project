@@ -18,6 +18,7 @@ const SDL_Rect SCREEN_SIZE = { 0, 0, 1920, 1080 };
 
 enum class MissionStages
 {
+	INTRO,
 	BRIEF,	// get given your mission
 	MISSION,	// get given extra information along the way
 	DEBRIEF	// after completing the mission

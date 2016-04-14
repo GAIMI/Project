@@ -306,7 +306,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	// render objects
 	controls->render(touchLocation, cameraMain);
 	digger->render(viewportMain, cameraMain);
-	controls->renderText();
+	controls->renderText(digger->getNumSpacesMoved());
 	controls->renderScoreScreen();   
 
 	// render mini map
@@ -328,18 +328,18 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 			quit = true;
 		}
 
-		// only allow control of the UI when preparing a function string, not during its operation
-		if (!controls->getGoButtonPressed() && !controls->getEndOfMission() && !controls->getOkActive())
-		{
-			controls->setCurrentStage(stage);
-			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
-			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
-            quit = controls->getExit(); // sets the exit         
-		}
-		else if (controls->getOkActive())
+		if (controls->getOkActive() || controls->getOkPressed())
 		{
 			controls->okButtonActiveOnly(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
 			quit = controls->getExit(); // sets the exit
+		}
+		// only allow control of the UI when preparing a function string, not during its operation
+		else if (!controls->getGoButtonPressed() && !controls->getEndOfMission() && !controls->getOkActive())
+		{
+			//controls->setCurrentStage(stage);
+			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
+			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
+            quit = controls->getExit(); // sets the exit         
 		}
 	}
 }
@@ -392,7 +392,7 @@ void Game::processFunctions()
 			}
 			else if (fileName == FUNCTION_5)
 			{
-				// dig sample
+				controls->setDigState(true);
 				(*function)->complete = true;
 			}
 

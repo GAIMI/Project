@@ -22,6 +22,8 @@ private:
 	float lastX;	// X position at the end of the last move
 	float lastY;	// Y position at the end of the last move
 
+	int numSpacesMoved = 0;
+
 	Tile* currentTile;	// stores the tile the robot is currently on, even while moving
 
 	float width;
@@ -45,6 +47,7 @@ public:
 	float getPosX() const { return posX; }
 	float getPosY() const { return posY; }
 	Tile*& getCurrentTile() { return currentTile; }
+	int getNumSpacesMoved() const { return numSpacesMoved; }
 
 	// setters //
 

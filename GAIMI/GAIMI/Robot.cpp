@@ -44,6 +44,8 @@ TileAndDirection* Robot::move(Directions dir, Function* function, std::vector<Ti
 			// flag as complete
 			function->complete = true;
 
+			++numSpacesMoved;
+
 			TileAndDirection* info = new TileAndDirection;
 			info->tile = currentTile;
 			info->dir = Directions::NORTH;
@@ -59,6 +61,8 @@ TileAndDirection* Robot::move(Directions dir, Function* function, std::vector<Ti
 			setCurrentTile(tileSet[currentTile->getTileNumber() + (LEVEL_WIDTH / TILE_WIDTH)]);
 			lastY = posY;
 			function->complete = true;
+
+			++numSpacesMoved;
 
 			TileAndDirection* info = new TileAndDirection;
 			info->tile = currentTile;
@@ -76,6 +80,8 @@ TileAndDirection* Robot::move(Directions dir, Function* function, std::vector<Ti
 			lastX = posX;
 			function->complete = true;
 
+			++numSpacesMoved;
+
 			TileAndDirection* info = new TileAndDirection;
 			info->tile = currentTile;
 			info->dir = Directions::EAST;
@@ -91,6 +97,8 @@ TileAndDirection* Robot::move(Directions dir, Function* function, std::vector<Ti
 			setCurrentTile(tileSet[currentTile->getTileNumber() - 1]);
 			lastX = posX;
 			function->complete = true;
+
+			++numSpacesMoved;
 
 			TileAndDirection* info = new TileAndDirection;
 			info->tile = currentTile;

@@ -37,7 +37,7 @@ private:
 	Robot* digger;
 	UI* controls;
 
-	MissionStages stage = MissionStages::BRIEF;
+	MissionStages stage = MissionStages::INTRO;
 
 public:
 	// constructor

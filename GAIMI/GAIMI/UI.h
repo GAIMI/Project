@@ -53,6 +53,7 @@ private:
     MissionStages currentStage;
     std::vector<MissionText*> missionScript;
     int textRead;
+	bool dig = false;
 
     // speech text //
 
@@ -62,6 +63,7 @@ private:
     std::string currentText; // holds a copy of the text on screen for comparison so we dont keep creating a new texture if its the same
     std::vector<Texture*> textLines;	// holds the textures of each line of text after dividing up the current text string
     bool okActive = false;	// allows the ok button to be pressed
+	bool okPressed = false;	// allows remote pressing of the button without actually pressing it
 
    // score //
 
@@ -79,7 +81,7 @@ private:
     int bridges = 0;	// how many bridges in the inventory
     int bridgesLeft = 0;	// how many of the picked up bridges are left over after the current function string
 
-                            // bottom ui //
+    // bottom ui //
 
     std::list<Function*> functions;	// holds the placed functions in the bottom UI panel
     std::vector<SDL_Rect> functionStringHitBoxes;	// the size and position of the functions in the bottom UI panel
@@ -160,10 +162,12 @@ public:
     Tile*& getCurrentTile() { return currentTile; }
     bool getEndOfMission() const { return endOfMission; }
     bool getOkActive() const { return okActive; }
+	bool getOkPressed() const { return okPressed; }
 
 
     // setters //
 
+	void setDigState(bool state) { dig = state; }
     void setCurrentStage(MissionStages stage) { currentStage = stage; }
     void setGoButtonPressed(bool boolToSet) { goButtonPressed = boolToSet; }
     // set the start position for the next function string
@@ -181,7 +185,7 @@ public:
     bool loadMedia();
 
     // render the speech bubbles
-    bool renderText();
+    bool renderText(int moves);
     bool LoadScript(std::string filePath, std::vector<MissionText*>& missionScript);
     void getNextLine();
 

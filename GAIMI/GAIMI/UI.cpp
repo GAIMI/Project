@@ -7,8 +7,8 @@ UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
     renderer(rend), textRead(0), scriptOverridden(false), currentText(""), viewportMain(viewportMain),
     templatePosX(0), templatePosY(0), useBoxPos(false), listPosition(0), numBoxes(1), gapVisible(true),
     goButtonPressed(false), functionPickedUp(nullptr), funcStringBoxIndex(-1), tempBoxCreated(nullptr),
-    tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::BRIEF),
-    currentStage(MissionStages::BRIEF), codeToRender(0)
+    tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::INTRO),
+    currentStage(MissionStages::INTRO), codeToRender(0)
 {
     // create viewports
     viewportFull = new SDL_Rect({ 0, 0, SCREEN_SIZE.w, SCREEN_SIZE.h });	// full screen
@@ -696,10 +696,14 @@ void UI::mouseInputHandler(SDL_Event& event, float& frameTime, SDL_Point& touchL
 void UI::okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
     SDL_Rect& camera, const SDL_Rect& screenSize)
 {
-    ////////////////
-    // touch down //
-    ////////////////
-    if (event.type == SDL_FINGERDOWN)
+	if (okPressed)
+	{
+		okButton(touchLocation);
+	}
+	////////////////
+	// touch down //
+	////////////////
+    else if (event.type == SDL_FINGERDOWN)
     {
         touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
         touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
@@ -964,52 +968,25 @@ void UI::downMainWindowUI(SDL_Point& touchLocation)
 }
 void UI::okButton(SDL_Point& touchLocation)
 {
-    // if mouse is over the map //
-    if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
-        touchLocation.y > 0 && touchLocation.y < viewportMain->h)
-    {
-        // ok button pressed
-        if (((touchLocation.x > viewportLeft->w + OK_BUTTON_DR.x &&
+	// if mouse is over the map //
+	if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
+	{
+		// ok button pressed (either of them)
+		if (((touchLocation.x > viewportLeft->w + OK_BUTTON_DR.x &&
 			touchLocation.x < viewportLeft->w + OK_BUTTON_DR.x + OK_BUTTON_DR.w &&
 			touchLocation.y > OK_BUTTON_DR.y &&
 			touchLocation.y < OK_BUTTON_DR.y + OK_BUTTON_DR.h) &&
 			(codeToRender % 10 == 1)) ||
 			((touchLocation.x > viewportLeft->w + OK_BUTTON_PROF.x &&
 				touchLocation.x < viewportLeft->w + OK_BUTTON_PROF.x + OK_BUTTON_PROF.w &&
-            touchLocation.y > OK_BUTTON_PROF.y &&
+				touchLocation.y > OK_BUTTON_PROF.y &&
 				touchLocation.y < OK_BUTTON_PROF.y + OK_BUTTON_PROF.h) &&
 				(codeToRender % 10 == 2)))
-        {
-            // TEST: of script increment
-            if (scriptOverridden)
-            {
-                scriptOverridden = false;
-                stringToRender[0] = "";
-            }
-            else
-            {
-                if (textRead < static_cast<int>(missionScript.size()))
-                {
-                    // check to see if the next string is the same code as the previous (same dialog)  
-                    // or we've moved on to the next mission stage (unlocking more dialog)
-                    if (missionScript[textRead]->code == missionScript[textRead - 1]->code ||
-						missionScript[textRead]->code == missionScript[textRead - 1]->code + 1 ||
-						missionScript[textRead]->code == missionScript[textRead - 1]->code - 1 ||
-						previousStage != currentStage)
-                    {
-                        previousStage = currentStage;
-                        getNextLine(); // Gets next line and increments textRead value
-                    }
-                }
-                else
-                    stringToRender[0] = "";
-            }
-
-            // clear the function template from the cursor if there is one
-            if (functionTemplate != nullptr)
-                functionTemplate->free();
-        }
-    }
+		{
+			okPressed = true;
+		}
+	}
 
 	// Exit and clear reset
 	else if (touchLocation.x > EXIT_BUTTON.x &&
@@ -1019,6 +996,40 @@ void UI::okButton(SDL_Point& touchLocation)
 	{
 		// Exit    
 		quitGame = true;
+	}
+
+	if (okPressed)
+	{
+		okPressed = false;
+
+		// script increment
+		if (scriptOverridden)
+		{
+			scriptOverridden = false;
+			stringToRender[0] = "";
+		}
+		else
+		{
+			if (textRead < static_cast<int>(missionScript.size()))
+			{
+				// check to see if the next string is the same code as the previous (same dialog)  
+				// or we've moved on to the next mission stage (unlocking more dialog)
+				if (missionScript[textRead]->code == missionScript[textRead - 1]->code ||
+					missionScript[textRead]->code == missionScript[textRead - 1]->code + 1 ||
+					missionScript[textRead]->code == missionScript[textRead - 1]->code - 1 ||
+					previousStage != currentStage)
+				{
+					previousStage = currentStage;
+					getNextLine(); // Gets next line and increments textRead value
+				}
+			}
+			else
+				stringToRender[0] = "";
+		}
+
+		// clear the function template from the cursor if there is one
+		if (functionTemplate != nullptr)
+			functionTemplate->free();
 	}
 }
 
@@ -1568,7 +1579,7 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 }
 
 // render the speech bubbles
-bool UI::renderText()
+bool UI::renderText(int moves)
 {
     if (static_cast<int>(stringToRender.size()) > 0)
     {
@@ -1599,7 +1610,8 @@ bool UI::renderText()
     if (currentText != "")
     {
 		// render Dr Ogel
-		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
+		if (codeToRender % 100 != 11 && codeToRender % 100 != 12)
+			drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 
 		// Dr Ogel's lines
 		if (codeToRender % 10 == 1)
@@ -1630,6 +1642,30 @@ bool UI::renderText()
 		}
         okActive = true;
     }
+	// if at the end of the intro, transition straight into the brief
+	else if (currentStage == MissionStages::INTRO)
+	{
+		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
+		currentStage = MissionStages::BRIEF;
+		okPressed = true;
+		okActive = true;
+	}
+	else if (currentStage == MissionStages::BRIEF && moves == 5)
+	{
+		currentStage = MissionStages::MISSION;
+		okPressed = true;
+		okActive = true;
+	}
+	else if (currentStage == MissionStages::MISSION && dig)
+	{
+		currentStage = MissionStages::DEBRIEF;
+		okPressed = true;
+		okActive = true;
+	}
+	else if (currentStage == MissionStages::DEBRIEF)
+	{
+		endOfMission = true;
+	}
 
     return true;
 }
@@ -1677,19 +1713,18 @@ void UI::renderScoreScreen()
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
 
-        int X = (SCREEN_SIZE.w / 2) - 350;
-        for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
+        //int X = (SCREEN_SIZE.w / 2) - 350;
+        //for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
+        //{
+        //    blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+        //    X += 250; // 200 star width and 50 spacing
+        //}
 
-        {
-            blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-            X += 250; // 200 star width and 50 spacing
-        }
-
-        X = (SCREEN_SIZE.w / 2) - 350;
-        for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
-        {
-            stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-            X += 250; // 200 star width and 50 spacing
-        }
+        //X = (SCREEN_SIZE.w / 2) - 350;
+        //for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
+        //{
+        //    stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+        //    X += 250; // 200 star width and 50 spacing
+        //}
     }
 }
