@@ -969,15 +969,15 @@ void UI::okButton(SDL_Point& touchLocation)
         touchLocation.y > 0 && touchLocation.y < viewportMain->h)
     {
         // ok button pressed
-        if (((touchLocation.x > viewportLeft->w + DR_O_POS.x - 107 &&
-			touchLocation.x < viewportLeft->w + DR_O_POS.x - 107 + OK_BUTTON.w &&
-			touchLocation.y > DR_O_POS.y + 198 &&
-			touchLocation.y < DR_O_POS.y + 198 + OK_BUTTON.h) &&
+        if (((touchLocation.x > viewportLeft->w + OK_BUTTON_DR.x &&
+			touchLocation.x < viewportLeft->w + OK_BUTTON_DR.x + OK_BUTTON_DR.w &&
+			touchLocation.y > OK_BUTTON_DR.y &&
+			touchLocation.y < OK_BUTTON_DR.y + OK_BUTTON_DR.h) &&
 			(codeToRender % 10 == 1)) ||
-			((touchLocation.x > viewportLeft->w + OK_BUTTON.x && 
-				touchLocation.x < viewportLeft->w + OK_BUTTON.x + OK_BUTTON.w &&
-            touchLocation.y > OK_BUTTON.y && 
-				touchLocation.y < OK_BUTTON.y + OK_BUTTON.h) && 
+			((touchLocation.x > viewportLeft->w + OK_BUTTON_PROF.x &&
+				touchLocation.x < viewportLeft->w + OK_BUTTON_PROF.x + OK_BUTTON_PROF.w &&
+            touchLocation.y > OK_BUTTON_PROF.y &&
+				touchLocation.y < OK_BUTTON_PROF.y + OK_BUTTON_PROF.h) &&
 				(codeToRender % 10 == 2)))
         {
             // TEST: of script increment
@@ -1605,28 +1605,28 @@ bool UI::renderText()
 		if (codeToRender % 10 == 1)
 		{
 			// render Dr Ogel's speech bubble
-			speechBubble->renderMedia(DR_O_POS.x - 750, DR_O_POS.y + 50, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
+			speechBubble->renderMedia(SPEECH_BOX_DR.x, SPEECH_BOX_DR.y, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
 			int count = 0;
 			for (Texture* text : textLines)
 			{
-				text->renderMedia(DR_O_POS.x - 730, DR_O_POS.y + 70 + (count * 45), renderer);
+				text->renderMedia(SPEECH_DR.x, SPEECH_DR.y + (count * TEXT_HEIGHT), renderer);
 				++count;
 			}
-			OkButton->renderMedia(DR_O_POS.x - 107, DR_O_POS.y + 198, renderer);
+			OkButton->renderMedia(OK_BUTTON_DR.x, OK_BUTTON_DR.y, renderer);
 		}
 		// Prof Blue's lines
 		else
 		{
 			// render Prof Blue's speech bubble
-			speechBubble->renderMedia(SPEECH_BOX.x, SPEECH_BOX.y, renderer);
+			speechBubble->renderMedia(SPEECH_BOX_PROF.x, SPEECH_BOX_PROF.y, renderer);
 
 			int count = 0;
 			for (Texture* text : textLines)
 			{
-				text->renderMedia(SPEECH.x, SPEECH.y + (count * 45), renderer);
+				text->renderMedia(SPEECH_PROF.x, SPEECH_PROF.y + (count * TEXT_HEIGHT), renderer);
 				++count;
 			}
-			OkButton->renderMedia(OK_BUTTON.x, OK_BUTTON.y, renderer);
+			OkButton->renderMedia(OK_BUTTON_PROF.x, OK_BUTTON_PROF.y, renderer);
 		}
         okActive = true;
     }

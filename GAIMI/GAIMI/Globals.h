@@ -53,7 +53,6 @@ const std::string BRIDGE_ICON = "Media\\Bridge.png";
 const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
 
 const std::string DR_O = "Media\\DrO.png";
-const SDL_Point DR_O_POS{ 1000, 200 };
 const std::string PROF_B = "Media\\ProfB.png";
 
 const std::string LIST_MOVE = "Media\\ListMove.jpg";
@@ -195,15 +194,33 @@ const SDL_Rect RESET_BUTTON{
 ////////// SPEECH TEXT ///////////////
 
 const int STRING_LENGTH_MAX = 45;	// the max string length before attempting to divide up
-const SDL_Point SPEECH_BOX { 0, UI_MAIN_HEIGHT - 300 };
+const int TEXT_HEIGHT = 45;	// the space between the top of 1 line of text to the top of the next line
 
-const SDL_Rect OK_BUTTON{
-	SPEECH_BOX.x + 700,
-	SPEECH_BOX.y + 147,
+// Dr Ogel speech bubble and button //
+
+const SDL_Point DR_O_POS{ 1000, 200 };	// master position for Dr Ogel and his speech components
+const SDL_Point SPEECH_BOX_DR{ DR_O_POS.x - 750, DR_O_POS.y + 50 };	// the bubble
+const SDL_Point SPEECH_DR{ DR_O_POS.x - 730, DR_O_POS.y + 70 };	// the text
+
+// ok button for Dr Ogel
+const SDL_Rect OK_BUTTON_DR{
+	DR_O_POS.x - 107,
+	DR_O_POS.y + 198,
 	100,
 	100 };
 
-const SDL_Point SPEECH{ SPEECH_BOX.x + 70, SPEECH_BOX.y + 20 };
+
+// Prof Blue speech bubble and button //
+
+const SDL_Point SPEECH_BOX_PROF{ 0, UI_MAIN_HEIGHT - 300 };	// the bubble
+const SDL_Point SPEECH_PROF{ SPEECH_BOX_PROF.x + 70, SPEECH_BOX_PROF.y + 20 };	// the text
+
+// ok button for Prof Blue
+const SDL_Rect OK_BUTTON_PROF{
+	SPEECH_BOX_PROF.x + 700,
+	SPEECH_BOX_PROF.y + 147,
+	100,
+	100 };
 
 
 ////////// FUNCTION CONTROL ///////////
