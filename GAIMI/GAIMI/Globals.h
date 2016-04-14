@@ -196,7 +196,7 @@ const SDL_Rect RESET_BUTTON{
 const int STRING_LENGTH_MAX = 45;	// the max string length before attempting to divide up
 const int TEXT_HEIGHT = 45;	// the space between the top of 1 line of text to the top of the next line
 
-// Dr Ogel speech bubble and button //
+// Dr Ogel, speech bubble and button //
 
 const SDL_Point DR_O_POS{ 1000, 200 };	// master position for Dr Ogel and his speech components
 const SDL_Point SPEECH_BOX_DR{ DR_O_POS.x - 750, DR_O_POS.y + 50 };	// the bubble
@@ -210,9 +210,9 @@ const SDL_Rect OK_BUTTON_DR{
 	100 };
 
 
-// Prof Blue speech bubble and button //
+// Prof Blue's speech bubble and button //
 
-const SDL_Point SPEECH_BOX_PROF{ 0, UI_MAIN_HEIGHT - 300 };	// the bubble
+const SDL_Point SPEECH_BOX_PROF{ 0, UI_MAIN_HEIGHT - 300 };	// the bubble (master position)
 const SDL_Point SPEECH_PROF{ SPEECH_BOX_PROF.x + 70, SPEECH_BOX_PROF.y + 20 };	// the text
 
 // ok button for Prof Blue
