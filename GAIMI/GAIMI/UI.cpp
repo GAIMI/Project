@@ -1590,6 +1590,14 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     }
 }
 
+// allows non scripted speech to be displayed
+void UI::setStringToRender(std::string text)
+{ 
+	codeToRender = 12;
+	stringToRender[0] = text; 
+	scriptOverridden = true; 
+}
+
 // render the speech bubbles
 bool UI::renderText(int moves)
 {

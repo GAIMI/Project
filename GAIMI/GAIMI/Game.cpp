@@ -319,9 +319,13 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 // handle all inputs (touch, mouse, keyboard etc)
 void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& screenSize, SDL_Point& touchLocation, bool& quit)
 {
+	bool overide = controls->getOkPressed();
+
 	//Handle events on queue
-	while (SDL_PollEvent(&event) != 0)
+	while (SDL_PollEvent(&event) != 0 || overide)
 	{
+		overide = false;
+
 		//User requests quit
 		if (event.type == SDL_QUIT)
 		{
@@ -346,7 +350,8 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 // checks if the go button is pressed and goes through the function list
 void Game::processFunctions()
 {
-	if (controls->getGoButtonPressed()) // == true
+	// if we've activated our function queue and theres no messages on the screen to read
+	if (controls->getGoButtonPressed() && !controls->getOkActive())
 	{
 		std::list<Function*> functions = controls->getFunctionsList();
 
@@ -391,7 +396,11 @@ void Game::processFunctions()
 			}
 			else if (fileName == FUNCTION_5)
 			{
-				controls->setDigState(true);
+				if (digger->getCurrentTile()->getType() == 4)
+					controls->setDigState(true);
+				else
+					controls->setStringToRender("Your a dumbass!");
+
 				(*function)->complete = true;
 			}
 

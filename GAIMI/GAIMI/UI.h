@@ -184,6 +184,8 @@ public:
     // what ever media we need is loaded in here
     bool loadMedia();
 
+	// allows non scripted speech to be displayed
+	void setStringToRender(std::string text);
     // render the speech bubbles
     bool renderText(int moves);
     bool LoadScript(std::string filePath, std::vector<MissionText*>& missionScript);
