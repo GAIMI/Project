@@ -163,12 +163,12 @@ public:
     bool getEndOfMission() const { return endOfMission; }
     bool getOkActive() const { return okActive; }
 	bool getOkPressed() const { return okPressed; }
+	MissionStages& getCurrentStage() { return currentStage; }
 
 
     // setters //
 
 	void setDigState(bool state) { dig = state; }
-    void setCurrentStage(MissionStages stage) { currentStage = stage; }
     void setGoButtonPressed(bool boolToSet) { goButtonPressed = boolToSet; }
     // set the start position for the next function string
     void setRobotTile(Tile*& current) { robotTile = current; }

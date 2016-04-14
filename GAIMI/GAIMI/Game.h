@@ -37,8 +37,6 @@ private:
 	Robot* digger;
 	UI* controls;
 
-	MissionStages stage = MissionStages::INTRO;
-
 public:
 	// constructor
 	Game(SDL_Window* wind, SDL_Renderer* rend, std::string& mapName);
@@ -49,12 +47,10 @@ public:
 	// getters //
 
 	Texture* getTexture() { return mapTexture; }
-	MissionStages& getMissionStage() { return stage; }
 
 	// setters //
 
 	bool loadMap(std::string image);
-	void setMissionStage(MissionStages newStage) { stage = newStage; }
 
 	// create bounding volumes for each tile and allocate a type type
 	bool setTiles();
