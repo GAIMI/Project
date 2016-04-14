@@ -17,7 +17,7 @@ WelcomeScreen::WelcomeScreen(SDL_Window* wind, SDL_Renderer* rend) :
 WelcomeScreen::~WelcomeScreen()
 {
 	background->free();
-	startButton->free();
+	/*startButton->free();*/
 	title->free();
 	selectedMap->free();
 
@@ -30,15 +30,15 @@ WelcomeScreen::~WelcomeScreen()
 bool WelcomeScreen::loadMedia()
 {
 	background = new Texture;
-	startButton = new Texture;
+	/*startButton = new Texture;*/
 	title = new Texture;
 	selectedMap = new Texture;
     exitButton = new Texture;
 
-	int startX = (SCREEN_SIZE.w / 2) - 200;
-	int startY = (SCREEN_SIZE.h / 3) * 2;
+	int startX = 200;
+	int startY = 450;
 
-	for (int i = 0; i < NUMBER_OF_MAPS; ++i)
+	for (int i = 0; i < NUMBER_OF_MAPS; i++)
 	{
 		maps.push_back(new MapTexture({
 			new Texture,
@@ -46,7 +46,17 @@ bool WelcomeScreen::loadMedia()
 			startY
 		}));
 
-		startX += MAP_WIDTH + MAP_SPACING;
+        if (i == 0)
+        {
+            startY += HEIGHT_OFFSET;
+        }
+        else
+        {
+            startY = 450;
+        }
+
+        startX += MAP_WIDTH + MAP_SPACING;
+        
 
 		if (!maps.at(i)->tex->loadFromFile(MAP_FILES[i], renderer))
 			return false;
@@ -55,8 +65,8 @@ bool WelcomeScreen::loadMedia()
 	if (!background->loadFromFile(BACKGROUND_FILE, renderer))
 		return false;
 
-	if (!startButton->loadFromFile(STARTBUTTON_FILE, renderer))
-		return false;
+	/*if (!startButton->loadFromFile(STARTBUTTON_FILE, renderer))
+		return false;*/
 
 	if (!title->loadFromFile(TITLE_FILE, renderer))
 		return false;
@@ -79,15 +89,11 @@ std::string WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit)
 	// Render all media
 	SDL_RenderSetViewport(renderer, viewportFull);
 	background->renderMedia(0, 0, renderer);
-	startButton->renderMedia(SCREEN_SIZE.w / 2 - (START_WIDTH / 2), SCREEN_SIZE.h / 2 - (START_HEIGHT / 2), renderer);
+	/*startButton->renderMedia(SCREEN_SIZE.w / 2 - (START_WIDTH / 2), SCREEN_SIZE.h / 2 - (START_HEIGHT / 2), renderer);*/
 	title->renderMedia(SCREEN_SIZE.w / 2 - (TITLE_WIDTH / 2), 100, renderer);
     exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
 
-	if (selectedX != 0 || selectedY != 0)
-	{
-		selectedMap->renderMedia(selectedX - 5, selectedY - 5, renderer);
-	}
-
+	
 	for (auto it = maps.begin(); it != maps.end(); ++it)
 	{
 		(*it)->tex->renderMedia((*it)->x, (*it)->y, renderer);
@@ -103,7 +109,7 @@ std::string WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit)
 	//NEEDS TO RETURN VARIABLE "selectedMapFileName"
 
 	// if start is pressed
-	if (startPressed)
+	if (mapPressed)
 		return selectedMapFileName;
 
 	return "";
@@ -127,16 +133,16 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 			touchLocation.x = event.button.x;
 			touchLocation.y = event.button.y;
 
-			// if within screen boundaries
-			if (touchLocation.x > viewportFull->x && touchLocation.x < screenSize.w &&
-				touchLocation.y > viewportFull->y && touchLocation.y < screenSize.h)
-			{
-				if (touchLocation.x > 810 && touchLocation.x < START_WIDTH + 810 &&
-					touchLocation.y > 425 && touchLocation.y < START_HEIGHT + 425)
-				{
-					if (selectedMapFileName != "")
-						startPressed = true;
-				}
+			//// if within screen boundaries
+			//if (touchLocation.x > viewportFull->x && touchLocation.x < screenSize.w &&
+			//	touchLocation.y > viewportFull->y && touchLocation.y < screenSize.h)
+			//{
+			//	if (touchLocation.x > 810 && touchLocation.x < START_WIDTH + 810 &&
+			//		touchLocation.y > 425 && touchLocation.y < START_HEIGHT + 425)
+			//	{
+			//		if (selectedMapFileName != "")
+			//			mapPressed = true;
+			//	}
 
 				//Loops through all buttons for maps
 				for (auto it = maps.begin(); it != maps.end(); ++it)
@@ -145,11 +151,10 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 						touchLocation.y >(*it)->y && touchLocation.y < MAP_HEIGHT + (*it)->y)
 					{
 						selectedMapFileName = (*it)->tex->getFileName();
-						selectedX = (*it)->x;
-						selectedY = (*it)->y;
+                        mapPressed = true;
 					}
 				}
-			}
+			//}
 
             //Exit and clear reset
             if (touchLocation.x > viewportFull->x + 20 &&

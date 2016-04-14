@@ -259,23 +259,25 @@ struct RouteOverlay
 // AARON //
 /////////// WELCOME SCREEN /////////////
 
-const std::string BACKGROUND_FILE = "Media\\background.png";
+const std::string BACKGROUND_FILE = "Media\\Background.png";
 const std::string STARTBUTTON_FILE = "Media\\start.png";
 const std::string TITLE_FILE = "Media\\title.png";
 const std::string SELECTED_FILE = "Media\\SelectedMap.png";
 
-const std::string MAP_FILES[3] = { "Media\\map1.png", "Media\\map2.png", "Media\\map3.png" };
+const std::string MAP_FILES[3] = { "Media\\IonisingRaditionMapLogo.png", "Media\\NitrateMapLogo.png", "Media\\WaterMapLogo.png" };
+const std::string MAP_SELECTED_FILES[3] = { "Media\\IonisingRaditionMapLogoSelected.png", "Media\\NitrateMapLogoSelected.png", "Media\\WaterMapLogoSelected.png" };
 const int NUMBER_OF_MAPS = 3;
 
-const int MAP_SPACING = 50;
-const int MAP_WIDTH = 100;
-const int MAP_HEIGHT = 100;
+const int MAP_SPACING = 250;
+const int MAP_WIDTH = 400;
+const int MAP_HEIGHT = 400;
+const int HEIGHT_OFFSET = 200;
 
 const int START_WIDTH = 300;
 const int START_HEIGHT = 150;
 
-const int TITLE_WIDTH = 600;
-const int TITLE_HEIGHT = 300;
+const int TITLE_WIDTH = 800;
+const int TITLE_HEIGHT = 130;
 
 struct MapTexture
 {

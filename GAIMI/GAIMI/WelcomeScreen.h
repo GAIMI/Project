@@ -23,7 +23,7 @@ private:
 
 	std::vector<MapTexture*> maps;
 
-	bool startPressed = false;
+	bool mapPressed = false;
 	std::string selectedMapFileName = "";
 	int selectedX = 0;
 	int selectedY = 0;

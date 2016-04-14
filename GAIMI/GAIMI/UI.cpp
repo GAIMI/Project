@@ -87,7 +87,8 @@ UI::~UI()
     OkButton->free();
     trashcan->free();
     openTrashcan->free();
-
+    exitButton->free();
+    clearButton->free();
 
     resetRouteMap();
 
