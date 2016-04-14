@@ -968,8 +968,16 @@ void UI::okButton(SDL_Point& touchLocation)
         touchLocation.y > 0 && touchLocation.y < viewportMain->h)
     {
         // ok button pressed
-        if (touchLocation.x > viewportLeft->w + OK_BUTTON.x && touchLocation.x < viewportLeft->w + OK_BUTTON.x + OK_BUTTON.w &&
-            touchLocation.y > OK_BUTTON.y && touchLocation.y < OK_BUTTON.y + OK_BUTTON.h)
+        if (((touchLocation.x > viewportLeft->w + DR_O_POS.x - 107 &&
+			touchLocation.x < viewportLeft->w + DR_O_POS.x - 107 + OK_BUTTON.w &&
+			touchLocation.y > DR_O_POS.y + 198 &&
+			touchLocation.y < DR_O_POS.y + 198 + OK_BUTTON.h) &&
+			(codeToRender % 10 == 1)) ||
+			((touchLocation.x > viewportLeft->w + OK_BUTTON.x && 
+				touchLocation.x < viewportLeft->w + OK_BUTTON.x + OK_BUTTON.w &&
+            touchLocation.y > OK_BUTTON.y && 
+				touchLocation.y < OK_BUTTON.y + OK_BUTTON.h) && 
+				(codeToRender % 10 == 2)))
         {
             // TEST: of script increment
             if (scriptOverridden)
@@ -1589,33 +1597,36 @@ bool UI::renderText()
     //Render text and background
     if (currentText != "")
     {
-		// render Dr Ogel and speech bubble
+		// render Dr Ogel
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
-		speechBubble->renderMedia(DR_O_POS.x - 750, DR_O_POS.y + 50, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
 
-		// render Prof Blue's speech bubble
-        speechBubble->renderMedia(SPEECH_BOX.x, SPEECH_BOX.y, renderer);
-
+		// Dr Ogel's lines
 		if (codeToRender % 10 == 1)
 		{
+			// render Dr Ogel's speech bubble
+			speechBubble->renderMedia(DR_O_POS.x - 750, DR_O_POS.y + 50, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
 			int count = 0;
 			for (Texture* text : textLines)
 			{
 				text->renderMedia(DR_O_POS.x - 730, DR_O_POS.y + 70 + (count * 45), renderer);
 				++count;
 			}
+			OkButton->renderMedia(DR_O_POS.x - 107, DR_O_POS.y + 198, renderer);
 		}
+		// Prof Blue's lines
 		else
 		{
+			// render Prof Blue's speech bubble
+			speechBubble->renderMedia(SPEECH_BOX.x, SPEECH_BOX.y, renderer);
+
 			int count = 0;
 			for (Texture* text : textLines)
 			{
 				text->renderMedia(SPEECH.x, SPEECH.y + (count * 45), renderer);
 				++count;
 			}
+			OkButton->renderMedia(OK_BUTTON.x, OK_BUTTON.y, renderer);
 		}
-
-        OkButton->renderMedia(OK_BUTTON.x, OK_BUTTON.y, renderer);
         okActive = true;
     }
 
