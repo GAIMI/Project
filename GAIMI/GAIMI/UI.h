@@ -67,8 +67,8 @@ private:
 
    // score //
 
-    bool endOfMission = false; // Needs to be in private 
-    int score = 2;
+    bool endOfMission = true; // Needs to be in private 
+    int score = 0;
     std::vector<Texture*> stars;
     std::vector<Texture*> blankStars;
 

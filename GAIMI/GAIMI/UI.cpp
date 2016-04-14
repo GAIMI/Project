@@ -577,7 +577,19 @@ bool UI::loadMedia()
     scoreBackground = new Texture;
     exitButton = new Texture;
     clearButton = new Texture;
-	drOgel = new Texture;
+    drOgel = new Texture;
+
+    //Loads star texture files
+    for (int i = 0; i < NUM_OF_STARS; i++)
+    {
+        stars.push_back(new Texture);
+        blankStars.push_back(new Texture);
+
+        if(!stars.at(i)->loadFromFile(FULL_STAR_FILE, renderer))
+            return false;
+        if (!blankStars.at(i)->loadFromFile(FULL_STAR_FILE, renderer))
+            return false;
+    }
 
 
     if (!leftPanel->loadFromFile(LEFT_UI, renderer))
@@ -1713,18 +1725,18 @@ void UI::renderScoreScreen()
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
 
-        //int X = (SCREEN_SIZE.w / 2) - 350;
-        //for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
-        //{
-        //    blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-        //    X += 250; // 200 star width and 50 spacing
-        //}
+        int X = (SCREEN_SIZE.w / 2) - 350;
+        for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
+        {
+            blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+            X += 250; // 200 star width and 50 spacing
+        }
 
-        //X = (SCREEN_SIZE.w / 2) - 350;
-        //for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
-        //{
-        //    stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
-        //    X += 250; // 200 star width and 50 spacing
-        //}
+        X = (SCREEN_SIZE.w / 2) - 350;
+        for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
+        {
+            stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+            X += 250; // 200 star width and 50 spacing
+        }
     }
 }
