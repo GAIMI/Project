@@ -1672,13 +1672,22 @@ bool UI::renderText(int moves)
 		okPressed = true;
 		okActive = true;
 	}
-	else if (currentStage == MissionStages::BRIEF && moves == 5 && map->missionScript == MAPS[0].missionScript)
+	else if (currentStage == MissionStages::BRIEF && 
+		map->missionScript == MAPS[0].missionScript && moves == 5)
 	{
 		currentStage = MissionStages::MISSION;
 		okPressed = true;
 		okActive = true;
 	}
-	else if (currentStage == MissionStages::BRIEF && moves == 5 && map->missionScript == MAPS[1].missionScript)
+	else if (currentStage == MissionStages::BRIEF && 
+		map->missionScript == MAPS[1].missionScript && bridges == 1)
+	{
+		currentStage = MissionStages::MISSION;
+		okPressed = true;
+		okActive = true;
+	}
+	else if (currentStage == MissionStages::BRIEF && 
+		map->missionScript == MAPS[2].missionScript && moves == 10)
 	{
 		currentStage = MissionStages::MISSION;
 		okPressed = true;
