@@ -1,0 +1,10 @@
+201 Right its time to get GAIMI back out into the  field for some more analysis.
+201 After a meteor shower yesterday one of the bridges over a chasm has been knocked loose and fallen into the chasm.
+201 Unfortunately the selected dig site is past this chasm. Fortunately, some materials were left out by other researchers. 
+201 By collecting these materials GAIMI can easily construct and place a bridge.
+201 
+212 Great! With the supplies in this crate building a bridge will be no problem at all!
+212 
+222 Interesting, that sample contained Nitrate! This is often used as fertiliser on earth, which aids plant growth. 
+222 If we could get plants on Mars, it might help to stabilise the atmosphere! 
+222 

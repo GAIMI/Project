@@ -17,9 +17,7 @@ WelcomeScreen::WelcomeScreen(SDL_Window* wind, SDL_Renderer* rend) :
 WelcomeScreen::~WelcomeScreen()
 {
 	background->free();
-	/*startButton->free();*/
 	title->free();
-	selectedMap->free();
 
 	for (auto it = maps.begin(); it != maps.end(); ++it)
 	{
@@ -30,9 +28,7 @@ WelcomeScreen::~WelcomeScreen()
 bool WelcomeScreen::loadMedia()
 {
 	background = new Texture;
-	/*startButton = new Texture;*/
 	title = new Texture;
-	selectedMap = new Texture;
     exitButton = new Texture;
 
 	int startX = 200;
@@ -55,23 +51,16 @@ bool WelcomeScreen::loadMedia()
             startY = 450;
         }
 
-        startX += MAP_WIDTH + MAP_SPACING;
-        
+        startX += MAP_WIDTH + MAP_SPACING;      
 
-		if (!maps.at(i)->tex->loadFromFile(MAP_FILES[i], renderer))
+		if (!maps.at(i)->tex->loadFromFile(MAPS[i].mapFile, renderer))
 			return false;
 	}
 
 	if (!background->loadFromFile(BACKGROUND_FILE, renderer))
 		return false;
 
-	/*if (!startButton->loadFromFile(STARTBUTTON_FILE, renderer))
-		return false;*/
-
 	if (!title->loadFromFile(TITLE_FILE, renderer))
-		return false;
-
-	if (!selectedMap->loadFromFile(SELECTED_FILE, renderer))
 		return false;
 
     if (!exitButton->loadFromFile(EXIT_BUTTON_FILE, renderer))
@@ -81,42 +70,32 @@ bool WelcomeScreen::loadMedia()
 }
 
 // do welcome screen stuff
-std::string WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit)
+void WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit, Maps*& chosenMap)
 {
 	//Clear screen
 	SDL_RenderClear(renderer);
 
+	//process inputs
+	processInputs(e, frameTime, quit, SCREEN_SIZE, touchLocation, chosenMap);
+
 	// Render all media
 	SDL_RenderSetViewport(renderer, viewportFull);
 	background->renderMedia(0, 0, renderer);
-	/*startButton->renderMedia(SCREEN_SIZE.w / 2 - (START_WIDTH / 2), SCREEN_SIZE.h / 2 - (START_HEIGHT / 2), renderer);*/
 	title->renderMedia(SCREEN_SIZE.w / 2 - (TITLE_WIDTH / 2), 100, renderer);
     exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
-
 	
 	for (auto it = maps.begin(); it != maps.end(); ++it)
 	{
 		(*it)->tex->renderMedia((*it)->x, (*it)->y, renderer);
 	}
 
-	//process inputs
-	processInputs(e, frameTime, quit, SCREEN_SIZE, touchLocation);
-
 	// Swap buffers
 	SDL_RenderPresent(renderer);
-
-
-	//NEEDS TO RETURN VARIABLE "selectedMapFileName"
-
-	// if start is pressed
-	if (mapPressed)
-		return selectedMapFileName;
-
-	return "";
 }
 
 // handle all inputs (touch, mouse, keyboard etc)
-void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit, const SDL_Rect& screenSize, SDL_Point& touchLocation)
+void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit, 
+	const SDL_Rect& screenSize, SDL_Point& touchLocation, Maps*& chosenMap)
 {
 	//Handle events on queue
 	while (SDL_PollEvent(&event) != 0)
@@ -133,28 +112,26 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 			touchLocation.x = event.button.x;
 			touchLocation.y = event.button.y;
 
-			//// if within screen boundaries
-			//if (touchLocation.x > viewportFull->x && touchLocation.x < screenSize.w &&
-			//	touchLocation.y > viewportFull->y && touchLocation.y < screenSize.h)
-			//{
-			//	if (touchLocation.x > 810 && touchLocation.x < START_WIDTH + 810 &&
-			//		touchLocation.y > 425 && touchLocation.y < START_HEIGHT + 425)
-			//	{
-			//		if (selectedMapFileName != "")
-			//			mapPressed = true;
-			//	}
-
-				//Loops through all buttons for maps
-				for (auto it = maps.begin(); it != maps.end(); ++it)
+			//Loops through all buttons for maps
+			for (auto it = maps.begin(); it != maps.end(); ++it)
+			{
+				if (touchLocation.x >(*it)->x && touchLocation.x < MAP_WIDTH + (*it)->x &&
+					touchLocation.y >(*it)->y && touchLocation.y < MAP_HEIGHT + (*it)->y)
 				{
-					if (touchLocation.x >(*it)->x && touchLocation.x < MAP_WIDTH + (*it)->x &&
-						touchLocation.y >(*it)->y && touchLocation.y < MAP_HEIGHT + (*it)->y)
+					for (Maps map : MAPS)
 					{
-						selectedMapFileName = (*it)->tex->getFileName();
-                        mapPressed = true;
+						if ((*it)->tex->getFileName() == map.mapFile)
+						{
+							chosenMap = new Maps;
+							chosenMap->first = map.first;
+							chosenMap->mapFile = map.mapFile;
+							chosenMap->mapMap = map.mapMap;
+							chosenMap->mapSelectedFile = map.mapSelectedFile;
+							chosenMap->missionScript = map.missionScript;
+						}
 					}
 				}
-			//}
+			}
 
             //Exit and clear reset
             if (touchLocation.x > viewportFull->x + 20 &&

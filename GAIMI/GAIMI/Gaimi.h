@@ -13,12 +13,12 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	WelcomeScreen* welcome;
-	Game* newGame;
+	WelcomeScreen* welcome = nullptr;
+	Game* newGame = nullptr;
 	bool createNewGame = false;
 	bool runGame = false;
 
-	std::string mapName = "";
+	Maps* map = nullptr;
 
 	//Main loop flag
 	bool quit = false;

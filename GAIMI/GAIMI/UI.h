@@ -49,6 +49,7 @@ private:
 
     // story teller //
 
+	Maps* map;
     MissionStages previousStage;
     MissionStages currentStage;
     std::vector<MissionText*> missionScript;
@@ -148,7 +149,7 @@ private:
 
 public:
     // constructor
-    UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet);
+    UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet, Maps* map);
 
     // destructor
     ~UI();

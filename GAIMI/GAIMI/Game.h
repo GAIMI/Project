@@ -29,7 +29,7 @@ private:
 	std::vector<Tile*> tileSet;
 	SDL_Rect tileClips[TOTAL_TILE_TYPES];
 
-	std::string mapName;
+	Maps* selectedMap;
 	Texture* mapTexture;
 
 	Texture* sceneTexture;	// for the mini map
@@ -39,7 +39,7 @@ private:
 
 public:
 	// constructor
-	Game(SDL_Window* wind, SDL_Renderer* rend, std::string& mapName);
+	Game(SDL_Window* wind, SDL_Renderer* rend, Maps* map);
 
 	// destructor
 	~Game();
@@ -50,10 +50,10 @@ public:
 
 	// setters //
 
-	bool loadMap(std::string image);
+	bool loadMap(std::string tileSheet);
 
 	// create bounding volumes for each tile and allocate a type type
-	bool setTiles();
+	bool setTiles(Maps* selectedMap);
 
 	// setup our scene
 	bool createGameObjects();

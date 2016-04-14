@@ -10,8 +10,8 @@
 
 
 // constructor
-Game::Game(SDL_Window* wind, SDL_Renderer* rend, std::string& map) :
-	window(wind), renderer(rend), mapName(map)
+Game::Game(SDL_Window* wind, SDL_Renderer* rend, Maps* map) :
+	window(wind), renderer(rend), selectedMap(map)
 {
 	// set default touch location to the centre of the screen
 	touchLocation.x = SCREEN_SIZE.w / 2;
@@ -25,11 +25,11 @@ Game::Game(SDL_Window* wind, SDL_Renderer* rend, std::string& map) :
 	//create camera to show only part of the map within viewportMain
 	cameraMain = UI_MAIN;
 
-	if (!loadMap(mapName))
+	if (!loadMap(TILE_SHEET_1))
 		throw;
 
 	// the level tiles	
-	if (!setTiles())
+	if (!setTiles(map))
 		throw;
 
 	// setup our simulation robot
@@ -53,12 +53,12 @@ Game::~Game()
 }
 
 // load the map into memory
-bool Game::loadMap(std::string image)
+bool Game::loadMap(std::string tileSheet)
 {
 	mapTexture = new Texture;
 
 	//Load sprite sheet texture
-	if (!mapTexture->loadFromFile(image.c_str(), renderer))
+	if (!mapTexture->loadFromFile(tileSheet.c_str(), renderer))
 	{
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
@@ -74,14 +74,14 @@ bool Game::loadMap(std::string image)
 }
 
 // create bounding volumes for each tile and allocate a type type
-bool Game::setTiles()
+bool Game::setTiles(Maps* selectedMap)
 {
 	//The tile offsets
 	int x = 0;
 	int y = 0;
 
 	//Open the map
-	std::ifstream map(MAP_1_MAP);
+	std::ifstream map(selectedMap->mapMap);
 
 	//If the map couldn't be loaded
 	if (!map)
@@ -252,8 +252,14 @@ bool Game::setTiles()
 // setup our simulation robot
 bool Game::createGameObjects()
 {
-	digger = new Robot(renderer);
-	controls = new UI(renderer, viewportMain, tileSet);
+	if (selectedMap->mapFile == MAPS[0].mapFile)
+		digger = new Robot(renderer);
+	else if (selectedMap->mapFile == MAPS[1].mapFile)
+		digger = new Robot(renderer, 2500.0f, 500.0f);
+	else
+		digger = new Robot(renderer, 1700.0f, 2500.0f);
+
+	controls = new UI(renderer, viewportMain, tileSet, selectedMap);
 
 	// error control
 	if (digger == nullptr || controls == nullptr)

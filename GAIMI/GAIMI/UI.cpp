@@ -3,12 +3,11 @@
 
 
 // constructor
-UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
+UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet, Maps* map) :
     renderer(rend), textRead(0), scriptOverridden(false), currentText(""), viewportMain(viewportMain),
     templatePosX(0), templatePosY(0), useBoxPos(false), listPosition(0), numBoxes(1), gapVisible(true),
     goButtonPressed(false), functionPickedUp(nullptr), funcStringBoxIndex(-1), tempBoxCreated(nullptr),
-    tempIndex(-1), currentTile(nullptr), tiles(tileSet), previousStage(MissionStages::INTRO),
-    currentStage(MissionStages::INTRO), codeToRender(0)
+    tempIndex(-1), currentTile(nullptr), tiles(tileSet), codeToRender(0), map(map)
 {
     // create viewports
     viewportFull = new SDL_Rect({ 0, 0, SCREEN_SIZE.w, SCREEN_SIZE.h });	// full screen
@@ -24,8 +23,11 @@ UI::UI(SDL_Renderer* rend, SDL_Rect* viewportMain, std::vector<Tile*> tileSet) :
     textColor = { 0, 0, 0 };
 
     // Loads script file line by line into the vector
-    LoadScript(DEFAULT_SCRIPT_FILE, missionScript);
+    LoadScript(map->missionScript, missionScript);
     getNextLine();
+
+	previousStage = map->first;
+	currentStage = map->first;
 
 
     // left UI //
@@ -1670,7 +1672,13 @@ bool UI::renderText(int moves)
 		okPressed = true;
 		okActive = true;
 	}
-	else if (currentStage == MissionStages::BRIEF && moves == 5)
+	else if (currentStage == MissionStages::BRIEF && moves == 5 && map->missionScript == MAPS[0].missionScript)
+	{
+		currentStage = MissionStages::MISSION;
+		okPressed = true;
+		okActive = true;
+	}
+	else if (currentStage == MissionStages::BRIEF && moves == 5 && map->missionScript == MAPS[1].missionScript)
 	{
 		currentStage = MissionStages::MISSION;
 		okPressed = true;

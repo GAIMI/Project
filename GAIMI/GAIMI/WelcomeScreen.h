@@ -18,13 +18,10 @@ private:
 	Texture* background;
 	Texture* startButton;
 	Texture* title;
-	Texture* selectedMap;
     Texture* exitButton;
 
 	std::vector<MapTexture*> maps;
 
-	bool mapPressed = false;
-	std::string selectedMapFileName = "";
 	int selectedX = 0;
 	int selectedY = 0;
 
@@ -38,8 +35,9 @@ public:
 	bool loadMedia();
 
 	// do welcome screen stuff
-	std::string run(SDL_Event& e, float& frameTime, bool& quit);
+	void run(SDL_Event& e, float& frameTime, bool& quit, Maps*& chosenMap);
 
 	// handle all inputs (touch, mouse, keyboard etc)
-	void processInputs(SDL_Event& e, float& frameTime, bool& quit, const SDL_Rect& screenSize, SDL_Point& touchLocation);
+	void processInputs(SDL_Event& e, float& frameTime, bool& quit, 
+		const SDL_Rect& screenSize, SDL_Point& touchLocation, Maps*& chosenMap);
 };

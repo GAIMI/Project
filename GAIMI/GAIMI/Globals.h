@@ -35,9 +35,6 @@ struct MissionText
 
 const std::string LEFT_UI = "Media\\Left_UI.png";
 const std::string BOTTOM_UI = "Media\\BottomUI.jpg";
-const std::string ROBOT_TEX = "Media\\Robot.png";
-const std::string MAP_1 = "Media\\MarsSheet.png";
-const std::string MAP_1_MAP = "Media\\mars2.map";
 
 const std::string GO_BUTTON_UI = "Media\\GoButton.png";
 const std::string OK_BUTTON_UI = "media\\OkButton.png";
@@ -53,9 +50,6 @@ const std::string SUPPLY_ICON = "Media\\SupplyCrate.png";
 const std::string BRIDGE_ICON = "Media\\Bridge.png";
 const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
 
-const std::string DR_O = "Media\\DrO.png";
-const std::string PROF_B = "Media\\ProfB.png";
-
 const std::string LIST_MOVE = "Media\\ListMove.jpg";
 const std::string EMPTY_BOX = "Media\\EmptyBox.png";
 const std::string BOX_BAR = "Media\\BoxBar.png";
@@ -64,10 +58,6 @@ const std::string OPEN_TRASHCAN = "Media\\TrashcanOpen.png";
 const std::string TILE_OVERLAY_RED = "Media\\redOverlay.png";
 const std::string TILE_OVERLAY_BLUE = "Media\\blueOverlay.png";
 
-const std::string TTF_FILE = "Media\\font.ttf";
-const std::string DEFAULT_SCRIPT_FILE = "Media\\testscript.txt";
-const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
-
 const std::string EXIT_BUTTON_FILE = "Media\\ExitButton.png";
 const int EXIT_BUTTON_WIDTH = 80;
 const int EXIT_BUTTON_HEIGHT = 72;
@@ -75,7 +65,9 @@ const std::string CLEAR_BUTTON_FILE = "Media\\ResetButton.png";
 const int CLEAR_BUTTON_WIDTH = 120;
 const int CLEAR_BUTTON_HEIGHT = 53;
 
-// Score Screen
+
+//////////// score Screen ////////////
+
 const std::string SCORE_BACKGROUND_FILE = "Media\\ScoreBackground.png";
 const std::string BLANK_STAR_FILE = "Media\\blankStar.png";
 const std::string FULL_STAR_FILE = "Media\\fullStar.png";
@@ -83,6 +75,8 @@ const int NUM_OF_STARS = 3;
 
 
 ////////////// ROBOT ///////////////
+
+const std::string ROBOT_TEX = "Media\\Robot.png";
 
 const float ROBOT_WIDTH = 183.0f;
 const float ROBOT_HEIGHT = 161.0f;
@@ -102,6 +96,27 @@ enum class Directions
 
 
 ////////////// MAP /////////////////
+
+struct Maps
+{
+	std::string mapFile;
+	std::string mapSelectedFile;
+	std::string mapMap;
+	std::string missionScript;
+	MissionStages first;
+};
+const int NUMBER_OF_MAPS = 3;
+
+const Maps MAPS[NUMBER_OF_MAPS]{
+	{ "Media\\IonisingRaditionMapLogo.png", "Media\\IonisingRaditionMapLogoSelected.png", 
+	"Media\\mars1.map", "Media\\MissionScript1.txt", MissionStages::INTRO },
+	{ "Media\\NitrateMapLogo.png", "Media\\NitrateMapLogoSelected.png", 
+	"Media\\mars2.map", "Media\\MissionScript2.txt", MissionStages::BRIEF },
+	{ "Media\\WaterMapLogo.png", "Media\\WaterMapLogoSelected.png", 
+	"Media\\mars3.map", "Media\\MissionScript3.txt", MissionStages::BRIEF }
+};
+
+const std::string TILE_SHEET_1 = "Media\\MarsSheet.png";
 
 //The dimensions of the level
 const int LEVEL_WIDTH = 3000;
@@ -194,6 +209,11 @@ const SDL_Rect RESET_BUTTON{
 
 ////////// SPEECH TEXT ///////////////
 
+const std::string DR_O = "Media\\DrO.png";
+const std::string PROF_B = "Media\\ProfB.png";
+const std::string TTF_FILE = "Media\\font.ttf";
+const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
+
 const int STRING_LENGTH_MAX = 45;	// the max string length before attempting to divide up
 const int TEXT_HEIGHT = 45;	// the space between the top of 1 line of text to the top of the next line
 
@@ -274,17 +294,13 @@ struct RouteOverlay
 };
 
 
-// AARON //
+
 /////////// WELCOME SCREEN /////////////
 
 const std::string BACKGROUND_FILE = "Media\\Background.png";
 const std::string STARTBUTTON_FILE = "Media\\start.png";
 const std::string TITLE_FILE = "Media\\title.png";
 const std::string SELECTED_FILE = "Media\\SelectedMap.png";
-
-const std::string MAP_FILES[3] = { "Media\\IonisingRaditionMapLogo.png", "Media\\NitrateMapLogo.png", "Media\\WaterMapLogo.png" };
-const std::string MAP_SELECTED_FILES[3] = { "Media\\IonisingRaditionMapLogoSelected.png", "Media\\NitrateMapLogoSelected.png", "Media\\WaterMapLogoSelected.png" };
-const int NUMBER_OF_MAPS = 3;
 
 const int MAP_SPACING = 250;
 const int MAP_WIDTH = 400;

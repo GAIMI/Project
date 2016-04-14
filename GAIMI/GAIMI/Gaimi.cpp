@@ -84,7 +84,7 @@ void Gaimi::run()
 		if (createNewGame)
 		{
 			// create a game instance
-			newGame = new Game(window, renderer, mapName);
+			newGame = new Game(window, renderer, map);
 			if (newGame == nullptr)
 				break;
 
@@ -102,16 +102,9 @@ void Gaimi::run()
 		// still on the welcome screen
 		else
 		{
-			mapName = welcome->run(e, frameTime, quit);
-			if (mapName != "")
+			welcome->run(e, frameTime, quit, map);
+			if (map != nullptr)
 			{
-				if (mapName == MAP_FILES[0])
-					mapName = MAP_1;
-				else if (mapName == MAP_FILES[1])
-					mapName = MAP_1;
-				else if (mapName == MAP_FILES[2])
-					mapName = MAP_1;
-
 				createNewGame = true;
 			}			
 		}
