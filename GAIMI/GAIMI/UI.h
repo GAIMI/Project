@@ -32,6 +32,7 @@ private:
     Texture* exitButton;
     Texture* resetButton;
 	Texture* drOgel;
+    Texture* continueButton;
 
     bool quitGame = false;
 	bool restartMission = false;
@@ -66,6 +67,7 @@ private:
     std::vector<Texture*> textLines;	// holds the textures of each line of text after dividing up the current text string
     bool okActive = false;	// allows the ok button to be pressed
 	bool okPressed = false;	// allows remote pressing of the button without actually pressing it
+    bool continuePressed = false;
 
    // score //
 

@@ -580,6 +580,7 @@ bool UI::loadMedia()
     exitButton = new Texture;
 	resetButton = new Texture;
     drOgel = new Texture;
+    continueButton = new Texture;
 
     //Loads star texture files
     for (int i = 0; i < NUM_OF_STARS; i++)
@@ -632,6 +633,9 @@ bool UI::loadMedia()
 
 	if (!drOgel->loadFromFile(DR_O, renderer))
 		return false;
+
+    if (!continueButton->loadFromFile(CONTINUE_BUTTON_FILE, renderer))
+        return false;
 
     return true;
 }
@@ -1081,10 +1085,10 @@ void UI::upBottomUI(SDL_Point& touchLocation)
                     functions.push_back(newFunction);
                     functionStringBoxes.back()->function = newFunction;
 
-					if (numBoxes - listPosition >= NUM_FUNC_STRING_BOXES)
-						gapVisible = false;
-					else
-						gapVisible = true;
+                    if (numBoxes - listPosition >= NUM_FUNC_STRING_BOXES)
+                        gapVisible = false;
+                    else
+                        gapVisible = true;
 
                     // add a new box to be filled
                     createFuncStringBox();
@@ -1453,6 +1457,9 @@ void UI::scoreScreenButtons(SDL_Point& touchLocation)
 	}
 
 	// button press here to trigger GameState change in renderScoreScreen() below....
+
+    // Continue button
+  
 }
 
 // script //
@@ -1698,6 +1705,7 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 	// if at the end of the intro, transition straight into the brief
 	else if (currentStage == MissionStages::INTRO)
 	{
+        //endOfMission = true;
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 		currentStage = MissionStages::BRIEF;
 		okPressed = true;
@@ -1804,6 +1812,10 @@ void UI::renderScoreScreen(GameStates& state)
     {
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
+
+        continueButton->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
+
+        // render continue button
 
         int X = (SCREEN_SIZE.w / 2) - 350;
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground

@@ -77,6 +77,7 @@ const std::string SCORE_BACKGROUND_FILE = "Media\\ScoreBackground.png";
 const std::string BLANK_STAR_FILE = "Media\\blankStar.png";
 const std::string FULL_STAR_FILE = "Media\\fullStar.png";
 const int NUM_OF_STARS = 3;
+const std::string CONTINUE_BUTTON_FILE = "Media\\resetButton.png";
 
 
 ////////////// ROBOT ///////////////
