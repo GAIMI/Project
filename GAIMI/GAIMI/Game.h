@@ -62,10 +62,10 @@ public:
 	bool createGameObjects();
 
 	// run the game until a call to exit
-	void run(SDL_Event& e, float& frameTime, bool& quit);
+	void run(SDL_Event& e, float& frameTime, GameStates& state);
 
 	// handle all inputs (touch, mouse, keyboard etc)
-	void processInputs(SDL_Event& e, float& frameTime, const SDL_Rect& screenSize, SDL_Point& touchLocation, bool& quit);
+	void processInputs(SDL_Event& e, float& frameTime, const SDL_Rect& screenSize, SDL_Point& touchLocation, GameStates& state);
 
 	// checks if the go button is pressed and goes through the function list
 	void processFunctions();

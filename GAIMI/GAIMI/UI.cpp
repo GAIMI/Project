@@ -1502,7 +1502,7 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     for (InventoryItem* item : inventoryItems)
     {
         item->tex->renderMedia(FUNCTION_SPACING_LEFT + (inventIndexCol * (FUNCTION_WIDTH + FUNCTION_SPACING_LEFT)),
-            400 + (inventIndexRow * (FUNCTION_HEIGHT + FUNCTION_SPACING_LEFT)), renderer);
+            INVENTORY_START_HEIGHT + (inventIndexRow * (FUNCTION_HEIGHT + FUNCTION_SPACING_LEFT)), renderer);
 
         if (inventIndexCol == 1)
         {
@@ -1767,7 +1767,7 @@ void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
 }
 
 // show how many stars the player earnt for that mission
-void UI::renderScoreScreen()
+void UI::renderScoreScreen(GameStates& state)
 {
     if (endOfMission) // Rendering only triggered when at the end of the mission
     {
@@ -1787,5 +1787,7 @@ void UI::renderScoreScreen()
             stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
             X += 250; // 200 star width and 50 spacing
         }
+
+		state = GameStates::NEXT_MISSION;
     }
 }

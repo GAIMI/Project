@@ -285,7 +285,7 @@ bool Game::createGameObjects()
 }
 
 // run the game until a call to exit
-void Game::run(SDL_Event& e, float& frameTime, bool& quit)
+void Game::run(SDL_Event& e, float& frameTime, GameStates& state)
 {
 	// set the screen colour
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -301,7 +301,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	}
 
 	// handle all inputs (touch, mouse, keyboard etc)
-	processInputs(e, frameTime, SCREEN_SIZE, touchLocation, quit);
+	processInputs(e, frameTime, SCREEN_SIZE, touchLocation, state);
 
 	digger->updateFrameTime(frameTime);
 
@@ -319,7 +319,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	controls->render(touchLocation, cameraMain);
 	digger->render(viewportMain, cameraMain);
 	controls->renderText(digger->getNumSpacesMoved(), numSupplies, numSurvivors);
-	controls->renderScoreScreen();   
+	controls->renderScoreScreen(state);
 
 	// render mini map
 	miniMap();
@@ -329,7 +329,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 }
 
 // handle all inputs (touch, mouse, keyboard etc)
-void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& screenSize, SDL_Point& touchLocation, bool& quit)
+void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& screenSize, SDL_Point& touchLocation, GameStates& state)
 {
 	bool overide = controls->getOkPressed();
 
@@ -341,21 +341,24 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 		//User requests quit
 		if (event.type == SDL_QUIT)
 		{
-			quit = true;
+			state = GameStates::BACK_TO_MENU;
 		}
 
 		if (controls->getOkActive() || controls->getOkPressed())
 		{
 			controls->okButtonActiveOnly(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
-			quit = controls->getExit(); // sets the exit
+			//quit = controls->getExit(); // sets the exit
 		}
 		// only allow control of the UI when preparing a function string, not during its operation
 		else if (!controls->getGoButtonPressed() && !controls->getEndOfMission() && !controls->getOkActive())
 		{
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
 			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
-            quit = controls->getExit(); // sets the exit         
+            //quit = controls->getExit(); // sets the exit         
 		}
+
+		if (controls->getExit())	// sets the exit
+			state = GameStates::BACK_TO_MENU;
 	}
 }
 

@@ -15,13 +15,9 @@ private:
 
 	WelcomeScreen* welcome = nullptr;
 	Game* newGame = nullptr;
-	bool createNewGame = false;
-	bool runGame = false;
+	Maps* currentMap = nullptr;
 
-	Maps* map = nullptr;
-
-	//Main loop flag
-	bool quit = false;
+	GameStates state = GameStates::RUN_MENU;
 
 	// setup our frame time
 	Timer frameTimer;

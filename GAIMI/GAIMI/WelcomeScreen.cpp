@@ -70,13 +70,13 @@ bool WelcomeScreen::loadMedia()
 }
 
 // do welcome screen stuff
-void WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit, Maps*& chosenMap)
+void WelcomeScreen::run(SDL_Event& e, float& frameTime, GameStates& state, Maps*& chosenMap)
 {
 	//Clear screen
 	SDL_RenderClear(renderer);
 
 	//process inputs
-	processInputs(e, frameTime, quit, SCREEN_SIZE, touchLocation, chosenMap);
+	processInputs(e, frameTime, state, SCREEN_SIZE, touchLocation, chosenMap);
 
 	// Render all media
 	SDL_RenderSetViewport(renderer, viewportFull);
@@ -94,7 +94,7 @@ void WelcomeScreen::run(SDL_Event& e, float& frameTime, bool& quit, Maps*& chose
 }
 
 // handle all inputs (touch, mouse, keyboard etc)
-void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit, 
+void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates& state, 
 	const SDL_Rect& screenSize, SDL_Point& touchLocation, Maps*& chosenMap)
 {
 	//Handle events on queue
@@ -103,7 +103,7 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
 		//User requests quit
 		if (event.type == SDL_QUIT)
 		{
-			quit = true;
+			state = GameStates::QUIT;
 		}
 
 		// add mouse and touch input handlers here.....
@@ -140,7 +140,7 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, bool& quit
                 touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
             {
                 //Exit    
-                quit = true;
+				state = GameStates::QUIT;
             }
 
 		} // end mousebuttondown

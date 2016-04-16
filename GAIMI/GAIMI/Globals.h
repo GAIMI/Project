@@ -16,6 +16,17 @@ const SDL_Rect SCREEN_SIZE = { 0, 0, 1920, 1080 };
 
 ////////////// GAME ////////////////
 
+enum class GameStates
+{
+	QUIT,
+	RUN_MENU,
+	RUN_GAME,
+	BACK_TO_MENU,
+	NEXT_MISSION,
+	CREATE_MENU,
+	CREATE_GAME
+};
+
 enum class MissionStages
 {
 	INTRO,
@@ -193,6 +204,7 @@ const SDL_Rect GO_BUTTON{
 	100 };
 
 const int INVENTORY_MAX_SIZE = 4;	// how many items the robot can carry at once
+const int INVENTORY_START_HEIGHT = 400;
 
 const SDL_Rect EXIT_BUTTON{
 	20,

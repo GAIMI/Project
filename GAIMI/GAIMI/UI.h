@@ -211,5 +211,5 @@ public:
     void render(SDL_Point& touchLocation, SDL_Rect &camera);
 
 	// show how many stars the player earnt for that mission
-    void renderScoreScreen();
+    void renderScoreScreen(GameStates& state);
 };

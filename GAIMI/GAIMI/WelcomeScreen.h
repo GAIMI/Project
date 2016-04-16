@@ -35,9 +35,9 @@ public:
 	bool loadMedia();
 
 	// do welcome screen stuff
-	void run(SDL_Event& e, float& frameTime, bool& quit, Maps*& chosenMap);
+	void run(SDL_Event& e, float& frameTime, GameStates& state, Maps*& chosenMap);
 
 	// handle all inputs (touch, mouse, keyboard etc)
-	void processInputs(SDL_Event& e, float& frameTime, bool& quit, 
+	void processInputs(SDL_Event& e, float& frameTime, GameStates& state,
 		const SDL_Rect& screenSize, SDL_Point& touchLocation, Maps*& chosenMap);
 };

@@ -73,7 +73,7 @@ bool Gaimi::init(const SDL_Rect& screenSize)
 void Gaimi::run()
 {
 	// while application is running
-	while (!quit)
+	while (state != GameStates::QUIT)
 	{
 		// calculate frame time
 		frameTime = static_cast<float>(frameTimer.getTicks()) / 1000.0f;
@@ -81,31 +81,98 @@ void Gaimi::run()
 		// restart frame timer
 		frameTimer.start();
 
-		if (createNewGame)
+		if (state == GameStates::CREATE_GAME || state == GameStates::NEXT_MISSION)
 		{
-			// create a game instance
-			newGame = new Game(window, renderer, map);
-			if (newGame == nullptr)
-				break;
+			// if we're moving on to the next mission, a game already exists so we need to clean that up first
+			if (newGame != nullptr)
+			{
+				// delete old game
+				delete newGame;
+				newGame = nullptr;
 
-			createNewGame = false;
-			runGame = true;
+				// change the map to the next map
+				bool nextMap = false;
+				for (Maps map : MAPS)
+				{
+					if (nextMap || currentMap == nullptr)
+					{
+						if (currentMap != nullptr)
+						{
+							delete currentMap;
+							currentMap = nullptr;
+						}
 
-			delete welcome;
-			welcome = nullptr;
+						currentMap = new Maps;
+						currentMap->first = map.first;
+						currentMap->mapFile = map.mapFile;
+						currentMap->mapMap = map.mapMap;
+						currentMap->mapSelectedFile = map.mapSelectedFile;
+						currentMap->missionScript = map.missionScript;
+
+						break;
+					}
+
+					if (currentMap->mapFile == map.mapFile)
+					{
+						nextMap = true;
+					}
+				}
+
+				// if we just completed the last mission
+				if (!nextMap)
+				{
+					state = GameStates::CREATE_MENU;
+				}
+			}
+
+			if (state == GameStates::CREATE_GAME)
+			{
+				// create a game instance
+				newGame = new Game(window, renderer, currentMap);
+				if (newGame == nullptr)
+					break;
+
+				delete welcome;
+				welcome = nullptr;
+
+				state = GameStates::RUN_GAME;
+			}
+		}	// end create game
+		else if (state == GameStates::BACK_TO_MENU)
+		{
+			state = GameStates::CREATE_MENU;
 		}
 
-		if (runGame)
+
+		if (state == GameStates::CREATE_MENU)
 		{
-			newGame->run(e, frameTime, quit);
+			if (newGame != nullptr)
+			{
+				// delete old game
+				delete newGame;
+				newGame = nullptr;
+			}
+			if (currentMap != nullptr)
+			{
+				delete currentMap;
+				currentMap = nullptr;
+			}
+
+			welcome = new WelcomeScreen(window, renderer);
+			state = GameStates::RUN_MENU;
+		}
+
+		if (state == GameStates::RUN_GAME)
+		{
+			newGame->run(e, frameTime, state);
 		}
 		// still on the welcome screen
-		else
+		else if (state == GameStates::RUN_MENU)
 		{
-			welcome->run(e, frameTime, quit, map);
-			if (map != nullptr)
+			welcome->run(e, frameTime, state, currentMap);
+			if (currentMap != nullptr)
 			{
-				createNewGame = true;
+				state = GameStates::CREATE_GAME;
 			}			
 		}
 	}
