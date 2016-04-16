@@ -580,6 +580,7 @@ bool UI::loadMedia()
     exitButton = new Texture;
     clearButton = new Texture;
     drOgel = new Texture;
+    continueButton = new Texture;
 
     //Loads star texture files
     for (int i = 0; i < NUM_OF_STARS; i++)
@@ -632,6 +633,9 @@ bool UI::loadMedia()
 
 	if (!drOgel->loadFromFile(DR_O, renderer))
 		return false;
+
+    if (!continueButton->loadFromFile(CONTINUE_BUTTON_FILE, renderer))
+        return false;
 
     return true;
 }
@@ -1667,6 +1671,7 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 	// if at the end of the intro, transition straight into the brief
 	else if (currentStage == MissionStages::INTRO)
 	{
+        
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 		currentStage = MissionStages::BRIEF;
 		okPressed = true;
@@ -1724,7 +1729,7 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 			++score;
 
 		// end the mission
-		endOfMission = true;
+        endOfMission = true;
 	}
 
     return true;
@@ -1774,6 +1779,8 @@ void UI::renderScoreScreen(GameStates& state)
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
 
+        // render continue button
+
         int X = (SCREEN_SIZE.w / 2) - 350;
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
         {
@@ -1788,6 +1795,8 @@ void UI::renderScoreScreen(GameStates& state)
             X += 250; // 200 star width and 50 spacing
         }
 
-		state = GameStates::NEXT_MISSION;
+        
+
+		//state = GameStates::NEXT_MISSION;
     }
 }
