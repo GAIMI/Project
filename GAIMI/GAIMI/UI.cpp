@@ -1017,7 +1017,6 @@ void UI::upBottomUI(SDL_Point& touchLocation)
 
             newFunction->tex = new Texture;
 
-            //newFunction->loadFromFile(functionTemplate->getFileName().insert(6, "Fullsize"), renderer);
             newFunction->tex->loadFromFile(functionTemplate->getFileName(), renderer);
             newFunction->complete = false;
 
@@ -1082,13 +1081,13 @@ void UI::upBottomUI(SDL_Point& touchLocation)
                     functions.push_back(newFunction);
                     functionStringBoxes.back()->function = newFunction;
 
+					if (numBoxes - listPosition >= NUM_FUNC_STRING_BOXES)
+						gapVisible = false;
+					else
+						gapVisible = true;
+
                     // add a new box to be filled
                     createFuncStringBox();
-
-                    if (numBoxes - listPosition >= NUM_FUNC_STRING_BOXES)
-                        gapVisible = false;
-                    else
-                        gapVisible = true;
                 }
                 else
                 {
@@ -1154,8 +1153,6 @@ void UI::upBottomUI(SDL_Point& touchLocation)
             }
             else
             {
-
-
                 // rollback and clean up //
 
                 functionPickedUp->function->tex->loadFromFile(tempFunc->tex->getFileName(), renderer);
@@ -1823,6 +1820,6 @@ void UI::renderScoreScreen(GameStates& state)
         }
 
 		// if button pressed.......
-		state = GameStates::NEXT_MISSION;
+		//state = GameStates::NEXT_MISSION;
     }
 }
