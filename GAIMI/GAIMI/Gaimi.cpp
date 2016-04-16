@@ -96,17 +96,19 @@ void Gaimi::run()
 				{
 					if (nextMap || currentMap == nullptr)
 					{
-						if (currentMap != nullptr)
+						nextMap = false;
+
+						if (currentMap == nullptr)
 						{
-							delete currentMap;
-							currentMap = nullptr;
+							currentMap = new Maps;
 						}
 
-						currentMap = new Maps;
 						currentMap->first = map.first;
 						currentMap->mapFile = map.mapFile;
 						currentMap->mapMap = map.mapMap;
 						currentMap->missionScript = map.missionScript;
+
+						state = GameStates::CREATE_GAME;
 
 						break;
 					}
@@ -118,11 +120,11 @@ void Gaimi::run()
 				}
 
 				// if we just completed the last mission
-				if (!nextMap)
+				if (nextMap)
 				{
 					state = GameStates::CREATE_MENU;
 				}
-			}
+			}	// end if newGame exists
 
 			if (state == GameStates::CREATE_GAME)
 			{
@@ -145,17 +147,15 @@ void Gaimi::run()
 
 		if (state == GameStates::CREATE_MENU)
 		{
-			if (newGame != nullptr)
-			{
-				// delete old game
-				delete newGame;
-				newGame = nullptr;
-			}
-			if (currentMap != nullptr)
-			{
-				delete currentMap;
-				currentMap = nullptr;
-			}
+
+			// delete old game
+			delete newGame;
+			newGame = nullptr;
+
+			// delete old map
+			delete currentMap;
+			currentMap = nullptr;
+
 
 			welcome = new WelcomeScreen(window, renderer);
 			state = GameStates::RUN_MENU;
@@ -182,11 +182,8 @@ void Gaimi::run()
 // clean up all memory allocation and close down SDL systems
 void Gaimi::close()
 {
-	if (welcome != nullptr)
-		delete welcome;
-
-	if (newGame != nullptr)
-		delete newGame;
+	delete welcome;
+	delete newGame;
 
 	// clean up renderer and window
 	SDL_DestroyRenderer(renderer);

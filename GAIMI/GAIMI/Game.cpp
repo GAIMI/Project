@@ -341,7 +341,7 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 		//User requests quit
 		if (event.type == SDL_QUIT)
 		{
-			state = GameStates::BACK_TO_MENU;
+			state = GameStates::QUIT;
 		}
 
 		if (controls->getOkActive() || controls->getOkPressed())
