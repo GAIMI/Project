@@ -354,6 +354,10 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
 			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);     
 		}
+		else if (controls->getEndOfMission())
+		{
+			controls->scoreScreenHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
+		}
 
 		if (controls->getExit())	// sets the exit
 			state = GameStates::BACK_TO_MENU;

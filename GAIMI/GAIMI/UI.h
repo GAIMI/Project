@@ -143,14 +143,14 @@ private:
     void downLeftUI(SDL_Point& touchLocation);
     void downBottomUI(SDL_Point& touchLocation);
     void downMainWindowUI(SDL_Point& touchLocation);
+	void okButton(SDL_Point& touchLocation);
+	void scoreScreenButtons(SDL_Point& touchLocation);
 
     void upBottomUI(SDL_Point& touchLocation);
 
     void motionLeftUI(SDL_Point& touchLocation);
     void motionBottomUI(SDL_Point& touchLocation);
     void motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera);
-
-    void okButton(SDL_Point& touchLocation);
 
 public:
     // constructor
@@ -208,6 +208,9 @@ public:
     // handle inputs for when speech is on the screen (can only press ok)
     void okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
         SDL_Rect& camera, const SDL_Rect& screenSize);
+
+	void scoreScreenHandler(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
+		SDL_Rect& camera, const SDL_Rect& screenSize);
 
     // render the UI to the screen
     void render(SDL_Point& touchLocation, SDL_Rect &camera);

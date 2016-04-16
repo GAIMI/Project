@@ -735,6 +735,30 @@ void UI::okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touch
         okButton(touchLocation);
     }
 }
+void UI::scoreScreenHandler(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
+	SDL_Rect& camera, const SDL_Rect& screenSize)
+{
+	////////////////
+	// touch down //
+	////////////////
+	if (event.type == SDL_FINGERDOWN)
+	{
+		touchLocation.x = static_cast<int>(event.tfinger.x * static_cast<float>(screenSize.w));
+		touchLocation.y = static_cast<int>(event.tfinger.y * static_cast<float>(screenSize.h));
+
+		scoreScreenButtons(touchLocation);
+	}
+	//////////////////////////
+	// mouse button clicked //
+	//////////////////////////
+	else if (event.type == SDL_MOUSEBUTTONDOWN)
+	{
+		touchLocation.x = event.button.x;
+		touchLocation.y = event.button.y;
+
+		scoreScreenButtons(touchLocation);
+	}
+}
 
 // input segregation
 
@@ -1000,7 +1024,7 @@ void UI::okButton(SDL_Point& touchLocation)
 		}
 	}
 
-	// Exit and clear reset
+	// Exit button
 	else if (touchLocation.x > EXIT_BUTTON.x &&
 		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
 		touchLocation.y > EXIT_BUTTON.y &&
@@ -1042,6 +1066,18 @@ void UI::okButton(SDL_Point& touchLocation)
 		// clear the function template from the cursor if there is one
 		if (functionTemplate != nullptr)
 			functionTemplate->free();
+	}
+}
+void UI::scoreScreenButtons(SDL_Point& touchLocation)
+{
+	// Exit button
+	if (touchLocation.x > EXIT_BUTTON.x &&
+		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
+		touchLocation.y > EXIT_BUTTON.y &&
+		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
+	{
+		// Exit    
+		quitGame = true;
 	}
 }
 
@@ -1786,6 +1822,6 @@ void UI::renderScoreScreen(GameStates& state)
         }
 
 		// if button pressed.......
-		state = GameStates::NEXT_MISSION;
+		//state = GameStates::NEXT_MISSION;
     }
 }
