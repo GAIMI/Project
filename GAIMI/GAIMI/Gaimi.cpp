@@ -106,7 +106,6 @@ void Gaimi::run()
 						currentMap->first = map.first;
 						currentMap->mapFile = map.mapFile;
 						currentMap->mapMap = map.mapMap;
-						currentMap->mapSelectedFile = map.mapSelectedFile;
 						currentMap->missionScript = map.missionScript;
 
 						break;

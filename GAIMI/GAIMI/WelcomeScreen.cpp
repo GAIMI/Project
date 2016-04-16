@@ -126,7 +126,6 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates
 							chosenMap->first = map.first;
 							chosenMap->mapFile = map.mapFile;
 							chosenMap->mapMap = map.mapMap;
-							chosenMap->mapSelectedFile = map.mapSelectedFile;
 							chosenMap->missionScript = map.missionScript;
 						}
 					}

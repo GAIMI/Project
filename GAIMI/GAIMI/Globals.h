@@ -111,7 +111,6 @@ enum class Directions
 struct Maps
 {
 	std::string mapFile;
-	std::string mapSelectedFile;
 	std::string mapMap;
 	std::string missionScript;
 	MissionStages first;
@@ -119,11 +118,11 @@ struct Maps
 const int NUMBER_OF_MAPS = 3;
 
 const Maps MAPS[NUMBER_OF_MAPS]{
-	{ "Media\\IonisingRaditionMapLogo.png", "Media\\IonisingRaditionMapLogoSelected.png", 
+	{ "Media\\IonisingRaditionMapLogo.png", 
 	"Media\\mars1.map", "Media\\MissionScript1.txt", MissionStages::INTRO },
-	{ "Media\\NitrateMapLogo.png", "Media\\NitrateMapLogoSelected.png", 
+	{ "Media\\NitrateMapLogo.png", 
 	"Media\\mars2.map", "Media\\MissionScript2.txt", MissionStages::BRIEF },
-	{ "Media\\WaterMapLogo.png", "Media\\WaterMapLogoSelected.png", 
+	{ "Media\\WaterMapLogo.png", 
 	"Media\\mars3.map", "Media\\MissionScript3.txt", MissionStages::BRIEF }
 };
 
