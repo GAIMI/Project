@@ -226,7 +226,7 @@ const std::string PROF_B = "Media\\ProfB.png";
 const std::string TTF_FILE = "Media\\font.ttf";
 const std::string SPEECH_BUBBLE = "Media\\SpeechBubble.png";
 
-const int STRING_LENGTH_MAX = 45;	// the max string length before attempting to divide up
+const int STRING_LENGTH_MAX = 34;	// the max string length before attempting to divide up
 const int TEXT_HEIGHT = 45;	// the space between the top of 1 line of text to the top of the next line
 
 // Dr Ogel, speech bubble and button //
