@@ -23,6 +23,7 @@ enum class GameStates
 	RUN_GAME,
 	BACK_TO_MENU,
 	NEXT_MISSION,
+	RESTART_MISSION,
 	CREATE_MENU,
 	CREATE_GAME
 };
@@ -68,13 +69,6 @@ const std::string TRASHCAN = "Media\\TrashcanClosed.png";
 const std::string OPEN_TRASHCAN = "Media\\TrashcanOpen.png";
 const std::string TILE_OVERLAY_RED = "Media\\redOverlay.png";
 const std::string TILE_OVERLAY_BLUE = "Media\\blueOverlay.png";
-
-const std::string EXIT_BUTTON_FILE = "Media\\ExitButton.png";
-const int EXIT_BUTTON_WIDTH = 80;
-const int EXIT_BUTTON_HEIGHT = 72;
-const std::string CLEAR_BUTTON_FILE = "Media\\ResetButton.png";
-const int CLEAR_BUTTON_WIDTH = 120;
-const int CLEAR_BUTTON_HEIGHT = 53;
 
 
 //////////// score Screen ////////////
@@ -205,17 +199,20 @@ const SDL_Rect GO_BUTTON{
 const int INVENTORY_MAX_SIZE = 4;	// how many items the robot can carry at once
 const int INVENTORY_START_HEIGHT = 400;
 
+const std::string EXIT_BUTTON_FILE = "Media\\ExitButton.png";
+const std::string RESET_BUTTON_FILE = "Media\\ResetButton.png";
+
 const SDL_Rect EXIT_BUTTON{
 	20,
 	SCREEN_SIZE.h - 80,
-	EXIT_BUTTON_WIDTH,
-	EXIT_BUTTON_HEIGHT };
+	80,
+	72 };
 
 const SDL_Rect RESET_BUTTON{
 	120,
 	SCREEN_SIZE.h - 70,
-	CLEAR_BUTTON_WIDTH,
-	CLEAR_BUTTON_HEIGHT };
+	120,
+	53 };
 
 
 ////////// SPEECH TEXT ///////////////

@@ -30,10 +30,11 @@ private:
     Texture* speechBubble;	//backdrop for text on the map viewport
     Texture* scoreBackground;
     Texture* exitButton;
-    Texture* clearButton;
+    Texture* resetButton;
 	Texture* drOgel;
 
     bool quitGame = false;
+	bool restartMission = false;
 
     TTF_Font* font;
 
@@ -163,6 +164,7 @@ public:
     std::list<Function*>& getFunctionsList() { return functions; }
 
     bool getExit() const { return quitGame; }
+	bool getRestart() const { return restartMission; }
     bool getGoButtonPressed() const { return goButtonPressed; }
     Tile*& getCurrentTile() { return currentTile; }
     bool getEndOfMission() const { return endOfMission; }

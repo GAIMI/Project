@@ -134,9 +134,9 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates
 
             //Exit and clear reset
             if (touchLocation.x > viewportFull->x + 20 &&
-                touchLocation.x < viewportFull->x + 20 + EXIT_BUTTON_WIDTH &&
+                touchLocation.x < viewportFull->x + 20 + EXIT_BUTTON.w &&
                 touchLocation.y > viewportFull->y + SCREEN_SIZE.h - 80 &&
-                touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXIT_BUTTON_HEIGHT)
+                touchLocation.y < viewportFull->y + SCREEN_SIZE.h - 80 + EXIT_BUTTON.h)
             {
                 //Exit    
 				state = GameStates::QUIT;

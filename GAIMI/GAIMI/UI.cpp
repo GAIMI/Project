@@ -90,7 +90,7 @@ UI::~UI()
     trashcan->free();
     openTrashcan->free();
     exitButton->free();
-    clearButton->free();
+	resetButton->free();
 
     resetRouteMap();
 
@@ -578,7 +578,7 @@ bool UI::loadMedia()
     openTrashcan = new Texture;
     scoreBackground = new Texture;
     exitButton = new Texture;
-    clearButton = new Texture;
+	resetButton = new Texture;
     drOgel = new Texture;
 
     //Loads star texture files
@@ -624,7 +624,7 @@ bool UI::loadMedia()
     if (!exitButton->loadFromFile(EXIT_BUTTON_FILE, renderer))
         return false;
 
-    if (!clearButton->loadFromFile(CLEAR_BUTTON_FILE, renderer))
+    if (!resetButton->loadFromFile(RESET_BUTTON_FILE, renderer))
         return false;
 
     if (!scoreBackground->loadFromFile(SCORE_BACKGROUND_FILE, renderer))
@@ -832,13 +832,12 @@ void UI::downLeftUI(SDL_Point& touchLocation)
             functionTemplate->loadFromFile(functionFilenames.at(position), renderer);
         }
 
-        // Exit and clear reset
+        // Exit button
         if (touchLocation.x > EXIT_BUTTON.x &&
             touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
             touchLocation.y > EXIT_BUTTON.y &&
             touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
-        {
-            // Exit    
+        {   
             quitGame = true;
         }
 
@@ -848,8 +847,7 @@ void UI::downLeftUI(SDL_Point& touchLocation)
             touchLocation.y > RESET_BUTTON.y &&
             touchLocation.y < RESET_BUTTON.y + RESET_BUTTON.h)
         {
-
-
+			restartMission = true;
         }
     }
 }
@@ -1491,8 +1489,8 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     SDL_RenderSetViewport(renderer, viewportLeft);
 
     leftPanel->renderMedia(0, 0, renderer);
-    exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
-    clearButton->renderMedia(120, SCREEN_SIZE.h - 70, renderer);
+    exitButton->renderMedia(EXIT_BUTTON.x, EXIT_BUTTON.y, renderer);
+	resetButton->renderMedia(RESET_BUTTON.x, RESET_BUTTON.y, renderer);
 
     //SDL_RenderCopy(renderer, leftPanel->getTexture(), 0, 0);
 
@@ -1536,7 +1534,6 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     SDL_RenderSetViewport(renderer, viewportMain);
 
     // render route overlays
-    SDL_RenderSetViewport(renderer, viewportMain);
     for (RouteOverlay* tile : routeTiles)
     {
         tile->tex->renderMedia(tile->location.x - camera.x, tile->location.y - camera.y, renderer);
@@ -1788,6 +1785,7 @@ void UI::renderScoreScreen(GameStates& state)
             X += 250; // 200 star width and 50 spacing
         }
 
+		// if button pressed.......
 		state = GameStates::NEXT_MISSION;
     }
 }

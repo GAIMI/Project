@@ -347,18 +347,19 @@ void Game::processInputs(SDL_Event& event, float& frameTime, const SDL_Rect& scr
 		if (controls->getOkActive() || controls->getOkPressed())
 		{
 			controls->okButtonActiveOnly(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
-			//quit = controls->getExit(); // sets the exit
 		}
 		// only allow control of the UI when preparing a function string, not during its operation
 		else if (!controls->getGoButtonPressed() && !controls->getEndOfMission() && !controls->getOkActive())
 		{
 			controls->mouseInputHandler(event, frameTime, touchLocation, cameraMain);
-			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);
-            //quit = controls->getExit(); // sets the exit         
+			controls->touchInputHandler(event, frameTime, touchLocation, cameraMain, SCREEN_SIZE);     
 		}
 
 		if (controls->getExit())	// sets the exit
 			state = GameStates::BACK_TO_MENU;
+
+		if (controls->getRestart())
+			state = GameStates::RESTART_MISSION;
 	}
 }
 
