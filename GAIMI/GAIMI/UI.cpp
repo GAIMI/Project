@@ -1818,8 +1818,7 @@ void UI::renderScoreScreen(GameStates& state)
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia(SCORE_BOARD_RECT.x, SCORE_BOARD_RECT.y, renderer); // background position
 
-        // render continue button
-
+		// render stars
         int X = (SCREEN_SIZE.w / 2) - 350;
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
         {
@@ -1841,6 +1840,5 @@ void UI::renderScoreScreen(GameStates& state)
         {
             state = GameStates::NEXT_MISSION;
         }
-
     }
 }
