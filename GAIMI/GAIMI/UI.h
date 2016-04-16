@@ -30,11 +30,12 @@ private:
     Texture* speechBubble;	//backdrop for text on the map viewport
     Texture* scoreBackground;
     Texture* exitButton;
-    Texture* clearButton;
+    Texture* resetButton;
 	Texture* drOgel;
     Texture* continueButton;
 
     bool quitGame = false;
+	bool restartMission = false;
 
     TTF_Font* font;
 
@@ -151,7 +152,8 @@ private:
     void motionBottomUI(SDL_Point& touchLocation);
     void motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera);
 
-    void okButton(SDL_Point& touchLocation);
+	void okButton(SDL_Point& touchLocation);
+	void scoreScreenButtons(SDL_Point& touchLocation);
 
 public:
     // constructor
@@ -165,6 +167,7 @@ public:
     std::list<Function*>& getFunctionsList() { return functions; }
 
     bool getExit() const { return quitGame; }
+	bool getRestart() const { return restartMission; }
     bool getGoButtonPressed() const { return goButtonPressed; }
     Tile*& getCurrentTile() { return currentTile; }
     bool getEndOfMission() const { return endOfMission; }
@@ -208,6 +211,9 @@ public:
     // handle inputs for when speech is on the screen (can only press ok)
     void okButtonActiveOnly(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
         SDL_Rect& camera, const SDL_Rect& screenSize);
+
+	void scoreScreenHandler(SDL_Event& event, float& frameTime, SDL_Point& touchLocation,
+		SDL_Rect& camera, const SDL_Rect& screenSize);
 
     // render the UI to the screen
     void render(SDL_Point& touchLocation, SDL_Rect &camera);

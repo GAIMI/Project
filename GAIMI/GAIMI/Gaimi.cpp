@@ -81,7 +81,7 @@ void Gaimi::run()
 		// restart frame timer
 		frameTimer.start();
 
-		if (state == GameStates::CREATE_GAME || state == GameStates::NEXT_MISSION)
+		if (state == GameStates::CREATE_GAME || state == GameStates::NEXT_MISSION || state == GameStates::RESTART_MISSION)
 		{
 			// if we're moving on to the next mission, a game already exists so we need to clean that up first
 			if (newGame != nullptr)
@@ -92,32 +92,39 @@ void Gaimi::run()
 
 				// change the map to the next map
 				bool nextMap = false;
-				for (Maps map : MAPS)
-				{
-					if (nextMap || currentMap == nullptr)
-					{
-						nextMap = false;
 
-						if (currentMap == nullptr)
+				// only change the map if we're not restarting
+				if (state != GameStates::RESTART_MISSION)
+				{
+					for (Maps map : MAPS)
+					{
+						if (nextMap || currentMap == nullptr)
 						{
-							currentMap = new Maps;
+							nextMap = false;
+
+							if (currentMap == nullptr)
+							{
+								currentMap = new Maps;
+							}
+
+							currentMap->first = map.first;
+							currentMap->mapFile = map.mapFile;
+							currentMap->mapMap = map.mapMap;
+							currentMap->missionScript = map.missionScript;
+
+							state = GameStates::CREATE_GAME;
+
+							break;
 						}
 
-						currentMap->first = map.first;
-						currentMap->mapFile = map.mapFile;
-						currentMap->mapMap = map.mapMap;
-						currentMap->missionScript = map.missionScript;
-
-						state = GameStates::CREATE_GAME;
-
-						break;
-					}
-
-					if (currentMap->mapFile == map.mapFile)
-					{
-						nextMap = true;
+						if (currentMap->mapFile == map.mapFile)
+						{
+							nextMap = true;
+						}
 					}
 				}
+				else
+					state = GameStates::CREATE_GAME;
 
 				// if we just completed the last mission
 				if (nextMap)
