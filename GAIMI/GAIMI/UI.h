@@ -143,14 +143,15 @@ private:
     void downLeftUI(SDL_Point& touchLocation);
     void downBottomUI(SDL_Point& touchLocation);
     void downMainWindowUI(SDL_Point& touchLocation);
-	void okButton(SDL_Point& touchLocation);
-	void scoreScreenButtons(SDL_Point& touchLocation);
 
     void upBottomUI(SDL_Point& touchLocation);
 
     void motionLeftUI(SDL_Point& touchLocation);
     void motionBottomUI(SDL_Point& touchLocation);
     void motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera);
+
+	void okButton(SDL_Point& touchLocation);
+	void scoreScreenButtons(SDL_Point& touchLocation);
 
 public:
     // constructor

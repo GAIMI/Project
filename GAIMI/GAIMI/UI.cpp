@@ -1002,84 +1002,6 @@ void UI::downMainWindowUI(SDL_Point& touchLocation)
     mapLocation.x = touchLocation.x;
     mapLocation.y = touchLocation.y;
 }
-void UI::okButton(SDL_Point& touchLocation)
-{
-	// if mouse is over the map //
-	if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
-		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
-	{
-		// ok button pressed (either of them)
-		if (((touchLocation.x > viewportLeft->w + OK_BUTTON_DR.x &&
-			touchLocation.x < viewportLeft->w + OK_BUTTON_DR.x + OK_BUTTON_DR.w &&
-			touchLocation.y > OK_BUTTON_DR.y &&
-			touchLocation.y < OK_BUTTON_DR.y + OK_BUTTON_DR.h) &&
-			(codeToRender % 10 == 1)) ||
-			((touchLocation.x > viewportLeft->w + OK_BUTTON_PROF.x &&
-				touchLocation.x < viewportLeft->w + OK_BUTTON_PROF.x + OK_BUTTON_PROF.w &&
-				touchLocation.y > OK_BUTTON_PROF.y &&
-				touchLocation.y < OK_BUTTON_PROF.y + OK_BUTTON_PROF.h) &&
-				(codeToRender % 10 == 2)))
-		{
-			okPressed = true;
-		}
-	}
-
-	// Exit button
-	else if (touchLocation.x > EXIT_BUTTON.x &&
-		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
-		touchLocation.y > EXIT_BUTTON.y &&
-		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
-	{
-		// Exit    
-		quitGame = true;
-	}
-
-	if (okPressed)
-	{
-		okPressed = false;
-
-		// script increment
-		if (scriptOverridden)
-		{
-			scriptOverridden = false;
-			stringToRender[0] = "";
-		}
-		else
-		{
-			if (textRead < static_cast<int>(missionScript.size()))
-			{
-				// check to see if the next string is the same code as the previous (same dialog)  
-				// or we've moved on to the next mission stage (unlocking more dialog)
-				if (missionScript[textRead]->code == missionScript[textRead - 1]->code ||
-					missionScript[textRead]->code == missionScript[textRead - 1]->code + 1 ||
-					missionScript[textRead]->code == missionScript[textRead - 1]->code - 1 ||
-					previousStage != currentStage)
-				{
-					previousStage = currentStage;
-					getNextLine(); // Gets next line and increments textRead value
-				}
-			}
-			else
-				stringToRender[0] = "";
-		}
-
-		// clear the function template from the cursor if there is one
-		if (functionTemplate != nullptr)
-			functionTemplate->free();
-	}
-}
-void UI::scoreScreenButtons(SDL_Point& touchLocation)
-{
-	// Exit button
-	if (touchLocation.x > EXIT_BUTTON.x &&
-		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
-		touchLocation.y > EXIT_BUTTON.y &&
-		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
-	{
-		// Exit    
-		quitGame = true;
-	}
-}
 
 void UI::upBottomUI(SDL_Point& touchLocation)
 {
@@ -1455,7 +1377,86 @@ void UI::motionMainWindowUI(SDL_Point& touchLocation, SDL_Rect& camera)
     }
 }
 
+void UI::okButton(SDL_Point& touchLocation)
+{
+	// if mouse is over the map //
+	if (touchLocation.x > viewportLeft->w && touchLocation.x < SCREEN_SIZE.w &&
+		touchLocation.y > 0 && touchLocation.y < viewportMain->h)
+	{
+		// ok button pressed (either of them)
+		if (((touchLocation.x > viewportLeft->w + OK_BUTTON_DR.x &&
+			touchLocation.x < viewportLeft->w + OK_BUTTON_DR.x + OK_BUTTON_DR.w &&
+			touchLocation.y > OK_BUTTON_DR.y &&
+			touchLocation.y < OK_BUTTON_DR.y + OK_BUTTON_DR.h) &&
+			(codeToRender % 10 == 1)) ||
+			((touchLocation.x > viewportLeft->w + OK_BUTTON_PROF.x &&
+				touchLocation.x < viewportLeft->w + OK_BUTTON_PROF.x + OK_BUTTON_PROF.w &&
+				touchLocation.y > OK_BUTTON_PROF.y &&
+				touchLocation.y < OK_BUTTON_PROF.y + OK_BUTTON_PROF.h) &&
+				(codeToRender % 10 == 2)))
+		{
+			okPressed = true;
+		}
+	}
 
+	// Exit button
+	else if (touchLocation.x > EXIT_BUTTON.x &&
+		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
+		touchLocation.y > EXIT_BUTTON.y &&
+		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
+	{
+		// Exit    
+		quitGame = true;
+	}
+
+	if (okPressed)
+	{
+		okPressed = false;
+
+		// script increment
+		if (scriptOverridden)
+		{
+			scriptOverridden = false;
+			stringToRender[0] = "";
+		}
+		else
+		{
+			if (textRead < static_cast<int>(missionScript.size()))
+			{
+				// check to see if the next string is the same code as the previous (same dialog)  
+				// or we've moved on to the next mission stage (unlocking more dialog)
+				if (missionScript[textRead]->code == missionScript[textRead - 1]->code ||
+					missionScript[textRead]->code == missionScript[textRead - 1]->code + 1 ||
+					missionScript[textRead]->code == missionScript[textRead - 1]->code - 1 ||
+					previousStage != currentStage)
+				{
+					previousStage = currentStage;
+					getNextLine(); // Gets next line and increments textRead value
+				}
+			}
+			else
+				stringToRender[0] = "";
+		}
+
+		// clear the function template from the cursor if there is one
+		if (functionTemplate != nullptr)
+			functionTemplate->free();
+	}
+}
+void UI::scoreScreenButtons(SDL_Point& touchLocation)
+{
+	// Exit button
+	if (touchLocation.x > EXIT_BUTTON.x &&
+		touchLocation.x < EXIT_BUTTON.x + EXIT_BUTTON.w &&
+		touchLocation.y > EXIT_BUTTON.y &&
+		touchLocation.y < EXIT_BUTTON.y + EXIT_BUTTON.h)
+	{
+		// Exit    
+		quitGame = true;
+	}
+
+	// button press here to trigger GameState change in renderScoreScreen() below....
+}
 
 // script //
 
@@ -1822,6 +1823,6 @@ void UI::renderScoreScreen(GameStates& state)
         }
 
 		// if button pressed.......
-		//state = GameStates::NEXT_MISSION;
+		state = GameStates::NEXT_MISSION;
     }
 }
