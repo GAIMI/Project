@@ -14,7 +14,7 @@
 101 Though be warned spending too much time on the planet's surface heightens the risk of being caught in a sandstorm!
 101 I've got to get back to the lab, I'll leave you in the capable hands of my assistant!
 101 
-112 According to GAIMI’s analysis, Mars' atmosphere is awful! On Earth, our atmosphere is 78% nitrogen, 21% oxygen and 0.03% carbon dioxide.
+112 According to GAIMI's analysis, Mars' atmosphere is awful! On Earth, our atmosphere is 78% nitrogen, 21% oxygen and 0.03% carbon dioxide.
 112 The readings here show Mars' atmosphere has 95.97% carbon dioxide, which is actually poisonous to humans! Not good initial readings, Doctor!
 112 
 122 Doctor, look at this! GAIMI is picking up high levels of ionising radiation. Here on earth, only a small amount gets through, because of how strong our magnetic field is.  

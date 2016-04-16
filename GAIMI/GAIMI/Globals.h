@@ -89,8 +89,8 @@ const int NUM_OF_STARS = 3;
 
 const std::string ROBOT_TEX = "Media\\Robot.png";
 
-const float ROBOT_WIDTH = 183.0f;
-const float ROBOT_HEIGHT = 161.0f;
+const float ROBOT_WIDTH = 200.0f;
+const float ROBOT_HEIGHT = 200.0f;
 
 const float START_XPOS_DEFAULT = 300.0f;
 const float START_YPOS_DEFAULT = 300.0f;
