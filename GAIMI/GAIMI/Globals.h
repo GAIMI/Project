@@ -79,6 +79,19 @@ const std::string FULL_STAR_FILE = "Media\\fullStar.png";
 const int NUM_OF_STARS = 3;
 const std::string CONTINUE_BUTTON_FILE = "Media\\resetButton.png";
 
+const SDL_Rect CONTINUE_BUTTON_RECT{
+    SCREEN_SIZE.w / 2 + 200,
+    SCREEN_SIZE.h / 2 + 100,
+    120,
+    53 };
+
+const SDL_Rect SCORE_BOARD_RECT{
+    (SCREEN_SIZE.w / 4),
+    SCREEN_SIZE.h / 4,
+    1099,
+    529 };
+
+
 
 ////////////// ROBOT ///////////////
 

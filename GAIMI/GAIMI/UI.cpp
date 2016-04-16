@@ -1462,7 +1462,13 @@ void UI::scoreScreenButtons(SDL_Point& touchLocation)
 	// button press here to trigger GameState change in renderScoreScreen() below....
 
     // Continue button
-  
+    if (touchLocation.x > CONTINUE_BUTTON_RECT.x &&
+        touchLocation.x < CONTINUE_BUTTON_RECT.x + CONTINUE_BUTTON_RECT.w &&
+        touchLocation.y > CONTINUE_BUTTON_RECT.y &&
+        touchLocation.y < CONTINUE_BUTTON_RECT.y + CONTINUE_BUTTON_RECT.h)
+    {
+        continuePressed = true;
+    }
 }
 
 // script //
@@ -1708,7 +1714,6 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 	// if at the end of the intro, transition straight into the brief
 	else if (currentStage == MissionStages::INTRO)
 	{
-        //endOfMission = true;
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 		currentStage = MissionStages::BRIEF;
 		okPressed = true;
@@ -1814,9 +1819,7 @@ void UI::renderScoreScreen(GameStates& state)
     if (endOfMission) // Rendering only triggered when at the end of the mission
     {
         SDL_RenderSetViewport(renderer, viewportFull);
-        scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
-
-        continueButton->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
+        scoreBackground->renderMedia(SCORE_BOARD_RECT.x, SCORE_BOARD_RECT.y, renderer); // background position
 
         // render continue button
 
@@ -1833,8 +1836,15 @@ void UI::renderScoreScreen(GameStates& state)
             stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
             X += 250; // 200 star width and 50 spacing
         }
+        
+        // render continueButton
+        continueButton->renderMedia(CONTINUE_BUTTON_RECT.x, CONTINUE_BUTTON_RECT.y, renderer);
 
-		//state = GameStates::NEXT_MISSION;
+        if (continuePressed)
+        {
+            state = GameStates::NEXT_MISSION;
+        }
+		
 
     }
 }
