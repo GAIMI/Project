@@ -522,6 +522,7 @@ void UI::processInventory(TileAndDirection* info)
             survivor->tex = new Texture;
             survivor->tex->loadFromFile(SURVIVOR_ICON, renderer);
             inventoryItems.push_back(survivor);
+			++survivors;
         }
         break;
     }
@@ -550,12 +551,11 @@ void UI::processInventory(TileAndDirection* info)
             // change the tile type to empty terrain
             info->tile->setType(PASSABLE);
             // create the inventory item
-            InventoryItem* bridge = new InventoryItem;
-            bridge->tex = new Texture;
-            bridge->tex->loadFromFile(SUPPLY_ICON, renderer);
-            inventoryItems.push_back(bridge);
-            ++bridges;
-            bridgesLeft = bridges;
+            InventoryItem* crate = new InventoryItem;
+			crate->tex = new Texture;
+			crate->tex->loadFromFile(SUPPLY_ICON, renderer);
+            inventoryItems.push_back(crate);
+            ++supplies;
         }
         break;
     }
@@ -1601,7 +1601,7 @@ void UI::setStringToRender(std::string text)
 }
 
 // render the speech bubbles
-bool UI::renderText(int moves)
+bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 {
     if (static_cast<int>(stringToRender.size()) > 0)
     {
@@ -1699,8 +1699,31 @@ bool UI::renderText(int moves)
 		okPressed = true;
 		okActive = true;
 	}
-	else if (currentStage == MissionStages::DEBRIEF)
+	else if (currentStage == MissionStages::DEBRIEF && !endOfMission)
 	{
+		// work out how to score the player
+		int objectives = 0;
+
+		if (numSupplies > 0)
+			++objectives;
+		if (numSurvivors > 0)
+			++objectives;
+
+		// if only 1 objective, give the player 1 star for partly finishing an objective
+		if (objectives == 1)
+		{
+			if (supplies > 0 || survivors > 0)
+				++score;
+		}
+
+		// increase the score (number of stars) by 1 if an objective is completed
+		if (numSupplies > 0 && supplies == numSupplies)
+			++score;
+
+		if (numSurvivors > 0 && survivors == numSurvivors)
+			++score;
+
+		// end the mission
 		endOfMission = true;
 	}
 
@@ -1743,6 +1766,7 @@ void UI::divideString(std::vector<std::string>& stringToRender, int stringNum)
     }
 }
 
+// show how many stars the player earnt for that mission
 void UI::renderScoreScreen()
 {
     if (endOfMission) // Rendering only triggered when at the end of the mission
@@ -1758,7 +1782,7 @@ void UI::renderScoreScreen()
         }
 
         X = (SCREEN_SIZE.w / 2) - 350;
-        for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gaimed (between 1 and NUMOFSTARS)
+        for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gained (between 1 and NUMOFSTARS)
         {
             stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
             X += 250; // 200 star width and 50 spacing

@@ -78,9 +78,13 @@ private:
     std::vector<SDL_Rect*> functionHitBoxes;	// the size and position of the functions in the left UI panel
     std::vector<std::string> functionFilenames;	// to identify the hit boxes
 
+	// inventory
     std::list<InventoryItem*> inventoryItems;
+	int supplies = 0;	// how many supplies in the inventory
+	int survivors = 0;	// how many survivors in the inventory
     int bridges = 0;	// how many bridges in the inventory
     int bridgesLeft = 0;	// how many of the picked up bridges are left over after the current function string
+
 
     // bottom ui //
 
@@ -188,7 +192,7 @@ public:
 	// allows non scripted speech to be displayed
 	void setStringToRender(std::string text);
     // render the speech bubbles
-    bool renderText(int moves);
+    bool renderText(int moves, int numSupplies, int numSurvivors);
     bool LoadScript(std::string filePath, std::vector<MissionText*>& missionScript);
     void getNextLine();
 
@@ -206,6 +210,6 @@ public:
     // render the UI to the screen
     void render(SDL_Point& touchLocation, SDL_Rect &camera);
 
-
+	// show how many stars the player earnt for that mission
     void renderScoreScreen();
 };

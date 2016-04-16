@@ -32,6 +32,9 @@ private:
 	Maps* selectedMap;
 	Texture* mapTexture;
 
+	int numSupplies = 0;	// number of supply crates on the map (not including bridge crates)
+	int numSurvivors = 0;	// how many survivors on the map
+
 	Texture* sceneTexture;	// for the mini map
 
 	Robot* digger;

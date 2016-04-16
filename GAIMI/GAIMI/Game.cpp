@@ -108,6 +108,12 @@ bool Game::setTiles(Maps* selectedMap)
 				return false;
 			}
 
+			// store the number of supplies and survivors on the map
+			if (tileType == 1)
+				++numSupplies;
+			else if (tileType == 3)
+				++numSurvivors;
+
 			//If the number is a valid tile number
 			if ((tileType >= 0) && (tileType < TOTAL_TILE_TYPES))
 			{
@@ -312,7 +318,7 @@ void Game::run(SDL_Event& e, float& frameTime, bool& quit)
 	// render objects
 	controls->render(touchLocation, cameraMain);
 	digger->render(viewportMain, cameraMain);
-	controls->renderText(digger->getNumSpacesMoved());
+	controls->renderText(digger->getNumSpacesMoved(), numSupplies, numSurvivors);
 	controls->renderScoreScreen();   
 
 	// render mini map
