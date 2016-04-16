@@ -1460,6 +1460,9 @@ void UI::scoreScreenButtons(SDL_Point& touchLocation)
 	}
 
 	// button press here to trigger GameState change in renderScoreScreen() below....
+
+    // Continue button
+  
 }
 
 // script //
@@ -1705,7 +1708,7 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 	// if at the end of the intro, transition straight into the brief
 	else if (currentStage == MissionStages::INTRO)
 	{
-        
+        //endOfMission = true;
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 		currentStage = MissionStages::BRIEF;
 		okPressed = true;
@@ -1812,6 +1815,8 @@ void UI::renderScoreScreen(GameStates& state)
     {
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer); // background position
+
+        continueButton->renderMedia((SCREEN_SIZE.w / 2) - 400, SCREEN_SIZE.h / 3, renderer);
 
         // render continue button
 
