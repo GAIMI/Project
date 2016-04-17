@@ -1820,17 +1820,18 @@ void UI::renderScoreScreen(GameStates& state)
 
         // render continue button
 
-        int X = (SCREEN_SIZE.w / 2) - 350;
+        int X = SCORE_BOARD_RECT.x + (SCORE_BOARD_RECT.w / 2) - 300;
+        int Y = SCORE_BOARD_RECT.y + (SCORE_BOARD_RECT.h / 2) - 50;
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
         {
-            blankStars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+            blankStars.at(i)->renderMedia(X, Y, renderer);
             X += 250; // 200 star width and 50 spacing
         }
 
-        X = (SCREEN_SIZE.w / 2) - 350;
+        X = SCORE_BOARD_RECT.x + (SCORE_BOARD_RECT.w / 2) - 300;
         for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gained (between 1 and NUMOFSTARS)
         {
-            stars.at(i)->renderMedia(X, SCREEN_SIZE.h / 3 + 50, renderer);
+            stars.at(i)->renderMedia(X, Y, renderer);
             X += 250; // 200 star width and 50 spacing
         }
         

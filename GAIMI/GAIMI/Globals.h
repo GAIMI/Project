@@ -73,23 +73,25 @@ const std::string TILE_OVERLAY_BLUE = "Media\\blueOverlay.png";
 
 //////////// score Screen ////////////
 
-const std::string SCORE_BACKGROUND_FILE = "Media\\ScoreBackground.png";
+const std::string SCORE_BACKGROUND_FILE = "Media\\ScoreBoardBackground2.png";
 const std::string BLANK_STAR_FILE = "Media\\blankStar.png";
 const std::string FULL_STAR_FILE = "Media\\fullStar.png";
 const int NUM_OF_STARS = 3;
-const std::string CONTINUE_BUTTON_FILE = "Media\\resetButton.png";
+const std::string CONTINUE_BUTTON_FILE = "Media\\ContinueButton.png";
 
-const SDL_Rect CONTINUE_BUTTON_RECT{
-    SCREEN_SIZE.w / 2 + 200,
-    SCREEN_SIZE.h / 2 + 100,
-    120,
-    53 };
 
 const SDL_Rect SCORE_BOARD_RECT{
     (SCREEN_SIZE.w / 4),
-    SCREEN_SIZE.h / 4,
-    1099,
-    529 };
+    SCREEN_SIZE.h / 6,
+    1000,
+    650 };
+
+const SDL_Rect CONTINUE_BUTTON_RECT{
+    SCORE_BOARD_RECT.x + SCORE_BOARD_RECT.w - 138 - 20,
+    SCORE_BOARD_RECT.y + SCORE_BOARD_RECT.h - 76,
+    138,
+    76 };
+
 
 
 
