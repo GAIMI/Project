@@ -1818,15 +1818,9 @@ void UI::renderScoreScreen(GameStates& state)
         SDL_RenderSetViewport(renderer, viewportFull);
         scoreBackground->renderMedia(SCORE_BOARD_RECT.x, SCORE_BOARD_RECT.y, renderer); // background position
 
-<<<<<<< HEAD
-        // render continue button
-
         int X = SCORE_BOARD_RECT.x + (SCORE_BOARD_RECT.w / 2) - 300;
         int Y = SCORE_BOARD_RECT.y + (SCORE_BOARD_RECT.h / 2) - 50;
-=======
-		// render stars
-        int X = (SCREEN_SIZE.w / 2) - 350;
->>>>>>> origin/master
+
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
         {
             blankStars.at(i)->renderMedia(X, Y, renderer);
