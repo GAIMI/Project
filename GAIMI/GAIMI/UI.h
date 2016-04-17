@@ -73,8 +73,8 @@ private:
 
     bool endOfMission = false; // Needs to be in private 
     int score = 1;
-    std::vector<Texture*> stars;
-    std::vector<Texture*> blankStars;
+    Texture* stars;
+    Texture* blankStars;
 
     // left ui //
 

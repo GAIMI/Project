@@ -91,6 +91,8 @@ UI::~UI()
     openTrashcan->free();
     exitButton->free();
 	resetButton->free();
+	blankStars->free();
+	stars->free();
 
     resetRouteMap();
 
@@ -122,17 +124,6 @@ UI::~UI()
 
         if ((*it)->function != nullptr)
             (*it)->function->tex->free();
-    }
-
-    //clean up stars
-    for (auto it = blankStars.begin(); it != blankStars.end(); ++it)
-    {
-        (*it)->free();
-    }
-
-    for (auto it = stars.begin(); it != stars.end(); ++it)
-    {
-        (*it)->free();
     }
 }
 
@@ -581,18 +572,8 @@ bool UI::loadMedia()
 	resetButton = new Texture;
     drOgel = new Texture;
     continueButton = new Texture;
-
-    //Loads star texture files
-    for (int i = 0; i < NUM_OF_STARS; i++)
-    {
-        stars.push_back(new Texture);
-        blankStars.push_back(new Texture);
-
-        if(!stars.at(i)->loadFromFile(FULL_STAR_FILE, renderer))
-            return false;
-        if (!blankStars.at(i)->loadFromFile(FULL_STAR_FILE, renderer))
-            return false;
-    }
+	stars = new Texture;
+	blankStars = new Texture;
 
 
     if (!leftPanel->loadFromFile(LEFT_UI, renderer))
@@ -636,6 +617,12 @@ bool UI::loadMedia()
 
     if (!continueButton->loadFromFile(CONTINUE_BUTTON_FILE, renderer))
         return false;
+
+	if (!stars->loadFromFile(FULL_STAR_FILE, renderer))
+		return false;
+
+	if (!blankStars->loadFromFile(BLANK_STAR_FILE, renderer))
+		return false;
 
     return true;
 }
@@ -1823,14 +1810,14 @@ void UI::renderScoreScreen(GameStates& state)
 
         for (int i = 0; i < NUM_OF_STARS; i++) // Renders all of the blank stars on the score baackground
         {
-            blankStars.at(i)->renderMedia(X, Y, renderer);
+            blankStars->renderMedia(X, Y, renderer);
             X += 250; // 200 star width and 50 spacing
         }
 
         X = SCORE_BOARD_RECT.x + (SCORE_BOARD_RECT.w / 2) - 300;
         for (int i = 0; i < score; i++) //Renders the number of coloured stars relative to the score gained (between 1 and NUMOFSTARS)
         {
-            stars.at(i)->renderMedia(X, Y, renderer);
+            stars->renderMedia(X, Y, renderer);
             X += 250; // 200 star width and 50 spacing
         }
         
