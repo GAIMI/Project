@@ -115,8 +115,10 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates
 			//Loops through all buttons for maps
 			for (auto it = maps.begin(); it != maps.end(); ++it)
 			{
-				if (touchLocation.x >(*it)->x && touchLocation.x < MAP_WIDTH + (*it)->x &&
-					touchLocation.y >(*it)->y && touchLocation.y < MAP_HEIGHT + (*it)->y)
+				if (touchLocation.x >(*it)->x + COLLISION_OFFSET 
+                    && touchLocation.x < MAP_WIDTH + (*it)->x - COLLISION_OFFSET
+                    && touchLocation.y >(*it)->y + COLLISION_OFFSET 
+                    && touchLocation.y < MAP_HEIGHT + (*it)->y - COLLISION_OFFSET)
 				{
 					for (Maps map : MAPS)
 					{

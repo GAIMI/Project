@@ -330,6 +330,7 @@ const int MAP_SPACING = 250;
 const int MAP_WIDTH = 400;
 const int MAP_HEIGHT = 400;
 const int HEIGHT_OFFSET = 200;
+const int COLLISION_OFFSET = 50;
 
 const int START_WIDTH = 300;
 const int START_HEIGHT = 150;

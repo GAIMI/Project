@@ -1698,6 +1698,7 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
 	// if at the end of the intro, transition straight into the brief
 	else if (currentStage == MissionStages::INTRO)
 	{
+
 		drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 		currentStage = MissionStages::BRIEF;
 		okPressed = true;
