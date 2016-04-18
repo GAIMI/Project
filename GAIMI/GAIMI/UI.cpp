@@ -1578,21 +1578,6 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     // set viewport
     SDL_RenderSetViewport(renderer, viewportFull);
 
-    // render the function template
-    if (functionTemplate != nullptr)
-    {
-        // if over an empty function string box, snap into position
-        if (useBoxPos && functionPickedUp == nullptr)
-            functionTemplate->renderMedia(templatePosX, templatePosY, renderer);
-        else
-            functionTemplate->renderMedia(touchLocation.x - functionTemplate->getWidth() / 2, touchLocation.y - functionTemplate->getHeight() / 2, renderer);
-    }
-
-    if (functionSelect.first != nullptr && functionSelect.first->getTexture() != nullptr)
-    {
-        functionSelect.first->renderMedia(functionSelect.second->x, functionSelect.second->y, renderer);
-    }
-
     // render the function string boxes
     int index = 0;
     for (auto function = functionStringBoxes.begin(); function != functionStringBoxes.end(); ++function)
@@ -1621,6 +1606,23 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
 
         ++index;
     }
+
+    // render the function template
+    if (functionTemplate != nullptr)
+    {
+        // if over an empty function string box, snap into position
+        if (useBoxPos && functionPickedUp == nullptr)
+            functionTemplate->renderMedia(templatePosX, templatePosY, renderer);
+        else
+            functionTemplate->renderMedia(touchLocation.x - functionTemplate->getWidth() / 2, touchLocation.y - functionTemplate->getHeight() / 2, renderer);
+    }
+
+    if (functionSelect.first != nullptr && functionSelect.first->getTexture() != nullptr)
+    {
+        functionSelect.first->renderMedia(functionSelect.second->x, functionSelect.second->y, renderer);
+    }
+
+    
 }
 
 // allows non scripted speech to be displayed
