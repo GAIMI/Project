@@ -324,7 +324,8 @@ struct RouteOverlay
 const std::string BACKGROUND_FILE = "Media\\Background.png";
 const std::string STARTBUTTON_FILE = "Media\\start.png";
 const std::string TITLE_FILE = "Media\\title.png";
-const std::string SELECTED_FILE = "Media\\SelectedMap.png";
+const std::string CREDITS_FILE = "Media\\Credits.png";
+const std::string CREDITS_BUTTON_FILE = "Media\\CreditsButton.png";
 
 const int MAP_SPACING = 250;
 const int MAP_WIDTH = 400;
@@ -337,6 +338,13 @@ const int START_HEIGHT = 150;
 
 const int TITLE_WIDTH = 800;
 const int TITLE_HEIGHT = 130;
+
+const SDL_Rect CREDITS_BUTTON{
+    SCREEN_SIZE.w - 200,
+    SCREEN_SIZE.h - 81,
+    200,
+    81 };
+
 
 struct MapTexture
 {

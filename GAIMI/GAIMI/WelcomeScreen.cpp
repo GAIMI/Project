@@ -16,8 +16,11 @@ WelcomeScreen::WelcomeScreen(SDL_Window* wind, SDL_Renderer* rend) :
 // destructor
 WelcomeScreen::~WelcomeScreen()
 {
-	background->free();
-	title->free();
+    background->free();
+    title->free();
+    exitButton->free();
+    creditsButton->free();
+    credits->free();
 
 	for (auto it = maps.begin(); it != maps.end(); ++it)
 	{
@@ -30,6 +33,8 @@ bool WelcomeScreen::loadMedia()
 	background = new Texture;
 	title = new Texture;
     exitButton = new Texture;
+    creditsButton = new Texture;
+    credits = new Texture;
 
 	int startX = 200;
 	int startY = 450;
@@ -66,6 +71,13 @@ bool WelcomeScreen::loadMedia()
     if (!exitButton->loadFromFile(EXIT_BUTTON_FILE, renderer))
         return false;
 
+    if (!creditsButton->loadFromFile(CREDITS_BUTTON_FILE, renderer))
+        return false;
+
+    if (!credits->loadFromFile(CREDITS_FILE, renderer))
+        return false;
+
+
 	return true;
 }
 
@@ -80,14 +92,29 @@ void WelcomeScreen::run(SDL_Event& e, float& frameTime, GameStates& state, Maps*
 
 	// Render all media
 	SDL_RenderSetViewport(renderer, viewportFull);
-	background->renderMedia(0, 0, renderer);
+
+    if (!showCredits)
+    {
+        background->renderMedia(0, 0, renderer);
+
+    }
+    else
+    {
+        credits->renderMedia(0, 0, renderer);
+    }
+	
 	title->renderMedia(SCREEN_SIZE.w / 2 - (TITLE_WIDTH / 2), 100, renderer);
     exitButton->renderMedia(20, SCREEN_SIZE.h - 80, renderer);
+    creditsButton->renderMedia(CREDITS_BUTTON.x, CREDITS_BUTTON.y, renderer);
+
+    if (!showCredits)
+    {
+        for (auto it = maps.begin(); it != maps.end(); ++it)
+        {
+            (*it)->tex->renderMedia((*it)->x, (*it)->y, renderer);
+        }
+    }
 	
-	for (auto it = maps.begin(); it != maps.end(); ++it)
-	{
-		(*it)->tex->renderMedia((*it)->x, (*it)->y, renderer);
-	}
 
 	// Swap buffers
 	SDL_RenderPresent(renderer);
@@ -112,29 +139,32 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates
 			touchLocation.x = event.button.x;
 			touchLocation.y = event.button.y;
 
-			//Loops through all buttons for maps
-			for (auto it = maps.begin(); it != maps.end(); ++it)
-			{
-				if (touchLocation.x >(*it)->x + COLLISION_OFFSET 
-                    && touchLocation.x < MAP_WIDTH + (*it)->x - COLLISION_OFFSET
-                    && touchLocation.y >(*it)->y + COLLISION_OFFSET 
-                    && touchLocation.y < MAP_HEIGHT + (*it)->y - COLLISION_OFFSET)
-				{
-					for (Maps map : MAPS)
-					{
-						if ((*it)->tex->getFileName() == map.mapFile)
-						{
-							chosenMap = new Maps;
-							chosenMap->first = map.first;
-							chosenMap->mapFile = map.mapFile;
-							chosenMap->mapMap = map.mapMap;
-							chosenMap->missionScript = map.missionScript;
-						}
-					}
-				}
-			}
+            if (!showCredits)
+            {
+                //Loops through all buttons for maps
+                for (auto it = maps.begin(); it != maps.end(); ++it)
+                {
+                    if (touchLocation.x > (*it)->x + COLLISION_OFFSET
+                        && touchLocation.x < MAP_WIDTH + (*it)->x - COLLISION_OFFSET
+                        && touchLocation.y >(*it)->y + COLLISION_OFFSET
+                        && touchLocation.y < MAP_HEIGHT + (*it)->y - COLLISION_OFFSET)
+                    {
+                        for (Maps map : MAPS)
+                        {
+                            if ((*it)->tex->getFileName() == map.mapFile)
+                            {
+                                chosenMap = new Maps;
+                                chosenMap->first = map.first;
+                                chosenMap->mapFile = map.mapFile;
+                                chosenMap->mapMap = map.mapMap;
+                                chosenMap->missionScript = map.missionScript;
+                            }
+                        }
+                    }
+                } // end of iterator
+            }  // if !show credits
 
-            //Exit and clear reset
+            //Exit button
             if (touchLocation.x > viewportFull->x + 20 &&
                 touchLocation.x < viewportFull->x + 20 + EXIT_BUTTON.w &&
                 touchLocation.y > viewportFull->y + SCREEN_SIZE.h - 80 &&
@@ -143,6 +173,16 @@ void WelcomeScreen::processInputs(SDL_Event& event, float& frameTime, GameStates
                 //Exit    
 				state = GameStates::QUIT;
             }
+
+            //credits button
+            if (touchLocation.x > CREDITS_BUTTON.x
+                && touchLocation.x < CREDITS_BUTTON.w + CREDITS_BUTTON.x
+                && touchLocation.y >CREDITS_BUTTON.y
+                && touchLocation.y < CREDITS_BUTTON.h + CREDITS_BUTTON.y)
+            {
+                showCredits = !showCredits;
+            }
+
 
 		} // end mousebuttondown
 	} // end while pol event

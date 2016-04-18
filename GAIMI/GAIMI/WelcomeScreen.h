@@ -16,14 +16,14 @@ private:
 	SDL_Rect* viewportFull;
 
 	Texture* background;
-	Texture* startButton;
 	Texture* title;
     Texture* exitButton;
+    Texture* creditsButton;
+    Texture* credits;
 
 	std::vector<MapTexture*> maps;
 
-	int selectedX = 0;
-	int selectedY = 0;
+    bool showCredits = false; // If the credits are shown (button pressed)
 
 public:
 	// constructor
