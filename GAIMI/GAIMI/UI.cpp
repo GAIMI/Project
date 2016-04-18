@@ -1376,12 +1376,12 @@ void UI::okButton(SDL_Point& touchLocation)
 			touchLocation.x < viewportLeft->w + OK_BUTTON_DR.x + OK_BUTTON_DR.w &&
 			touchLocation.y > OK_BUTTON_DR.y &&
 			touchLocation.y < OK_BUTTON_DR.y + OK_BUTTON_DR.h) &&
-			(codeToRender % 10 == 1)) ||
+			(codeToRender % 10 == 1 && !scriptOverridden)) ||
 			((touchLocation.x > viewportLeft->w + OK_BUTTON_PROF.x &&
 				touchLocation.x < viewportLeft->w + OK_BUTTON_PROF.x + OK_BUTTON_PROF.w &&
 				touchLocation.y > OK_BUTTON_PROF.y &&
 				touchLocation.y < OK_BUTTON_PROF.y + OK_BUTTON_PROF.h) &&
-				(codeToRender % 10 == 2)))
+				(codeToRender % 10 == 2 || scriptOverridden)))
 		{
 			okPressed = true;
 		}
@@ -1663,11 +1663,11 @@ bool UI::renderText(int moves, int numSupplies, int numSurvivors)
     if (currentText != "")
     {
 		// render Dr Ogel
-		if (codeToRender % 100 != 11 && codeToRender % 100 != 12)
+		if (codeToRender % 100 != 11 && codeToRender % 100 != 12 && !scriptOverridden)
 			drOgel->renderMedia(DR_O_POS.x, DR_O_POS.y, renderer);
 
 		// Dr Ogel's lines
-		if (codeToRender % 10 == 1)
+		if (codeToRender % 10 == 1 && !scriptOverridden)
 		{
 			// render Dr Ogel's speech bubble
 			speechBubble->renderMedia(SPEECH_BOX_DR.x, SPEECH_BOX_DR.y, renderer, 0, 0.0, 0, SDL_FLIP_HORIZONTAL);
