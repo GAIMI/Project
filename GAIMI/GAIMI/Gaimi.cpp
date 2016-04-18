@@ -47,7 +47,7 @@ bool Gaimi::init(const SDL_Rect& screenSize)
 		return false;
 	}
 
-	window = SDL_CreateWindow("GAIMI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenSize.w, screenSize.h, SDL_WINDOW_FOREIGN); //SDL_WINDOW_FULLSCREEN_DESKTOP
+	window = SDL_CreateWindow("GAIMI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenSize.w, screenSize.h, SDL_WINDOW_FULLSCREEN);	// width and height not used when set to fullscreen
 	if (window == nullptr)
 	{
 		TTF_Quit();
@@ -67,6 +67,8 @@ bool Gaimi::init(const SDL_Rect& screenSize)
 		return false;
 	}
 	return true;
+
+	SDL_RenderSetLogicalSize(renderer, 1920, 1080);
 }
 
 
