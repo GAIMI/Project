@@ -58,10 +58,6 @@ const std::string FUNCTION_4 = "Media\\RightArrow.png";
 const std::string FUNCTION_5 = "Media\\DigSample.png";
 const int NUM_FUNCTIONS = 5;	// how many different functions will be available to choose from in the left UI panel
 
-const std::string SUPPLY_ICON = "Media\\SupplyCrate.png";
-const std::string BRIDGE_ICON = "Media\\Bridge.png";
-const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
-
 const std::string LIST_MOVE = "Media\\ListMove.jpg";
 const std::string EMPTY_BOX = "Media\\EmptyBox.png";
 const std::string BOX_BAR = "Media\\BoxBar.png";
@@ -296,6 +292,10 @@ struct BoxBar
 
 
 //////////// INVENTORY ///////////////
+
+const std::string SUPPLY_ICON = "Media\\SupplyCrate.png";
+const std::string BRIDGE_ICON = "Media\\Bridge.png";
+const std::string SURVIVOR_ICON = "Media\\survivorIcon.png";
 
 struct InventoryItem
 {

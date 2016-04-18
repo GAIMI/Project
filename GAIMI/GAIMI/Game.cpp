@@ -419,7 +419,7 @@ void Game::processFunctions()
 				if (digger->getCurrentTile()->getType() == 4)
 					controls->setDigState(true);
 				else
-					controls->setStringToRender("Your a dumbass!");
+					controls->setStringToRender("Nothing found.  Please find the designated dig site and try again.");
 
 				(*function)->complete = true;
 			}

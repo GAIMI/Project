@@ -1621,8 +1621,6 @@ void UI::render(SDL_Point& touchLocation, SDL_Rect &camera)
     {
         functionSelect.first->renderMedia(functionSelect.second->x, functionSelect.second->y, renderer);
     }
-
-    
 }
 
 // allows non scripted speech to be displayed
