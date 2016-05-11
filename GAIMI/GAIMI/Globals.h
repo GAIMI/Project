@@ -95,8 +95,8 @@ const SDL_Rect CONTINUE_BUTTON_RECT{
 
 const std::string ROBOT_TEX = "Media\\Robot.png";
 
-const float ROBOT_WIDTH = 185.0f;
-const float ROBOT_HEIGHT = 142.0f;
+const float ROBOT_WIDTH = 200.0f;
+const float ROBOT_HEIGHT = 200.0f;
 
 const float START_XPOS_DEFAULT = 300.0f;
 const float START_YPOS_DEFAULT = 300.0f;
